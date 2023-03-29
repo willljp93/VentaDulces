@@ -12,6 +12,7 @@ php artisan key:generate
 php artisan migrate:fresh --seed
   # correr Laravel API
 php artisan server
+
 -----------------------------------------------
 # Quasar Framework 2 Frontend
 cd .\frontend\
@@ -19,5 +20,6 @@ cd .\frontend\
 pnpm install
   # correr quasar framework
 quasar dev
+
 -----------------------------------------------
 

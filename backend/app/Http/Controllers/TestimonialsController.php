@@ -14,7 +14,6 @@ class TestimonialsController extends Controller
     public function index()
     {
         $testimonialss = testimonials::all();
-        //create object to store data
         $array = [];
         foreach ($testimonialss as $testimonials) {
             $array[] = [

@@ -2,7 +2,9 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\FeaturedsController;
+use App\Http\Controllers\PromotionsController;
+use App\Http\Controllers\TestimonialsController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -18,20 +20,20 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 //api featureds
-Route::get('/featureds', 'App\Http\Controllers\FeaturedsController@index');
-Route::post('/featureds', 'App\Http\Controllers\FeaturedsController@store');
-Route::get('/featureds/{featureds}', 'App\Http\Controllers\FeaturedsController@show');
-Route::put('/featureds/{featureds}', 'App\Http\Controllers\FeaturedsController@update');
-Route::delete('/featureds/{featureds}', 'App\Http\Controllers\FeaturedsController@destroy');
+Route::get('/featureds', [FeaturedsController::class, 'index']);
+Route::post('/featureds', [FeaturedsController::class, 'store']);
+Route::get('/featureds/{id}', [FeaturedsController::class, 'show']);
+Route::patch('/featureds/{id}', [FeaturedsController::class, 'update']);
+Route::delete('/featureds/{id}', [FeaturedsController::class, 'destroy']);
 //api promotions
-Route::get('/promotions', 'App\Http\Controllers\PromotionsController@index');
-Route::post('/promotions', 'App\Http\Controllers\PromotionsController@store');
-Route::get('/promotions/{promotions}', 'App\Http\Controllers\PromotionsController@show');
-Route::put('/promotions/{promotions}', 'App\Http\Controllers\PromotionsController@update');
-Route::delete('/promotions/{promotions}', 'App\Http\Controllers\PromotionsController@destroy');
+Route::get('/promotions', [PromotionsController::class, 'index']);
+Route::post('/promotions', [PromotionsController::class, 'store']);
+Route::get('/promotions/{id}', [PromotionsController::class, 'show']);
+Route::patch('/promotions/{id}', [PromotionsController::class, 'update']);
+Route::delete('/promotions/{id}', [PromotionsController::class, 'destroy']);
 //api testimonials
-Route::get('/testimonials', 'App\Http\Controllers\TestimonialsController@index');
-Route::post('/testimonials', 'App\Http\Controllers\TestimonialsController@store');
-Route::get('/testimonials/{testimonials}', 'App\Http\Controllers\TestimonialsController@show');
-Route::put('/testimonials/{testimonials}', 'App\Http\Controllers\TestimonialsController@update');
-Route::delete('/testimonials/{testimonials}', 'App\Http\Controllers\TestimonialsController@destroy');
+Route::get('/testimonials', [TestimonialsController::class, 'index']);
+Route::post('/testimonials', [TestimonialsController::class, 'store']);
+Route::get('/testimonials/{id}', [TestimonialsController::class, 'show']);
+Route::patch('/testimonials/{id}', [TestimonialsController::class, 'update']);
+Route::delete('/testimonials/{id}', [TestimonialsController::class, 'destroy']);

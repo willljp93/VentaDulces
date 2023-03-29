@@ -224,7 +224,7 @@ const columnspromotions = [
     required: true,
     label: "Título",
     align: "left",
-    field: (row) => row.title,
+    field: "title",
     sortable: true,
   },
   {
@@ -238,6 +238,13 @@ const columnspromotions = [
     name: "discount",
     label: "Descuento",
     field: "discount",
+    sortable: true,
+    align: "center",
+  },
+  {
+    name: "expires",
+    label: "Expira",
+    field: "expires",
     sortable: true,
     align: "center",
   },

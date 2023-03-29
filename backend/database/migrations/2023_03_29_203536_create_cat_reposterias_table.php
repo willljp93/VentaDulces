@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('promotions', function (Blueprint $table) {
+        Schema::create('cat_reposterias', function (Blueprint $table) {
             $table->id();
             $table->string('title');
             $table->string('description');
-            $table->integer('discount')->nullable();
-            $table->date('expires');
             $table->string('image');
+            $table->integer('price');
+            $table->boolean('available');
+            $table->integer('rating');
+            $table->integer('discount')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('promotions');
+        Schema::dropIfExists('cat_reposterias');
     }
 };

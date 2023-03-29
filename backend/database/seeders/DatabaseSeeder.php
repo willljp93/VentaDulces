@@ -15,5 +15,10 @@ class DatabaseSeeder extends Seeder
         $this->call(FeaturedsSeeder::class);
         $this->call(PromotionsSeeder::class);
         $this->call(TestimonialsSeeder::class);
+        $this->call(CatDecoracionesSeeder::class);
+        $this->call(CatFlanesSeeder::class);
+        $this->call(CatPanaderiaSeeder::class);
+        $this->call(CatPastelesSeeder::class);
+        $this->call(CatReposteriaSeeder::class);
     }
 }

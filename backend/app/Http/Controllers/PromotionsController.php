@@ -22,6 +22,7 @@ class PromotionsController extends Controller
                 'title' => $promotions->title,
                 'description' => $promotions->description,
                 'discount' => $promotions->discount,
+                'expires' => $promotions->expires,
                 'image' => $promotions->image
             ];
         }
@@ -45,6 +46,7 @@ class PromotionsController extends Controller
         $promotions->title = $request->title;
         $promotions->description = $request->description;
         $promotions->discount = $request->discount;
+        $promotions->expires = $request->expires;
         $promotions->image = $request->image;
         $promotions->save();
         $data = [
@@ -82,6 +84,7 @@ class PromotionsController extends Controller
         $promotions->title = $request->title;
         $promotions->description = $request->description;
         $promotions->discount = $request->discount;
+        $promotions->expires = $request->expires;
         $promotions->image = $request->image;
         $promotions->save();
         $data = [

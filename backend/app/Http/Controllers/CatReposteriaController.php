@@ -13,7 +13,21 @@ class CatReposteriaController extends Controller
      */
     public function index()
     {
-        //
+        $catReposterias = catReposteria::all();
+        $array = [];
+        foreach ($catReposterias as $catReposteria) {
+            $array[] = [
+                'id' => $catReposteria->id,
+                'title' => $catReposteria->title,
+                'description' => $catReposteria->description,
+                'image' => $catReposteria->image,
+                'price' => $catReposteria->price,
+                'available' => $catReposteria->available,
+                'rating' => $catReposteria->rating,
+                'discount' => $catReposteria->discount,
+            ];
+        }
+        return response()->json($array);
     }
 
     /**
@@ -29,7 +43,20 @@ class CatReposteriaController extends Controller
      */
     public function store(StorecatReposteriaRequest $request)
     {
-        //
+        $catReposteria = new catReposteria;
+        $catReposteria->title = $request->title;
+        $catReposteria->description = $request->description;
+        $catReposteria->image = $request->image;
+        $catReposteria->price = $request->price;
+        $catReposteria->available = $request->available;
+        $catReposteria->rating = $request->rating;
+        $catReposteria->discount = $request->discount;
+        $catReposteria->save();
+        $data = [
+            'menssage' => 'Item creado satifactoriamente',
+            'data' => $catReposteria
+        ];
+        return response()->json($data);
     }
 
     /**
@@ -37,7 +64,11 @@ class CatReposteriaController extends Controller
      */
     public function show(catReposteria $catReposteria)
     {
-        //
+        $data = [
+            'message' => 'Detalles de Item',
+            'data' => $catReposteria,
+        ];
+        return response()->json($data);
     }
 
     /**
@@ -53,7 +84,19 @@ class CatReposteriaController extends Controller
      */
     public function update(UpdatecatReposteriaRequest $request, catReposteria $catReposteria)
     {
-        //
+        $catReposteria->title = $request->title;
+        $catReposteria->description = $request->description;
+        $catReposteria->image = $request->image;
+        $catReposteria->price = $request->price;
+        $catReposteria->available = $request->available;
+        $catReposteria->rating = $request->rating;
+        $catReposteria->discount = $request->discount;
+        $catReposteria->save();
+        $data = [
+            'menssage' => 'Item actualizado correctamente',
+            'client' => $catReposteria
+        ];
+        return response()->json($data);
     }
 
     /**
@@ -61,6 +104,11 @@ class CatReposteriaController extends Controller
      */
     public function destroy(catReposteria $catReposteria)
     {
-        //
+        $catReposteria->delete();
+        $data = [
+            'menssage' => 'Item eliminado correctamente',
+            'client' => $catReposteria
+        ];
+        return response()->json($data);
     }
 }

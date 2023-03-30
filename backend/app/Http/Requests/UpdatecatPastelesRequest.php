@@ -11,7 +11,7 @@ class UpdatecatPastelesRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,13 @@ class UpdatecatPastelesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'title' => ['require', 'unique:App\Models\catPasteles,title', 'max:50'],
+            'description' => ['require', 'max:255'],
+            'image' => ['require', 'max:255'],
+            'price' => ['require', 'integer', 'min:1', 'max:99999'],
+            'available' => ['require', 'boolean'],
+            'rating' => ['require', 'integer', 'min:1', 'max:5'],
+            'discount' => 'nullable'
         ];
     }
 }

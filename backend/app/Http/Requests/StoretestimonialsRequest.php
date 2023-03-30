@@ -22,7 +22,10 @@ class StoretestimonialsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'avatar' => ['require', 'max:50'],
+            'name' => ['require', 'unique:App\Models\testimonials,name','max:50'],
+            'text' => ['require', 'max:255'],
+            'rating' => ['require']
         ];
     }
 }

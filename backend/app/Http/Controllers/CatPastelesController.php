@@ -13,7 +13,21 @@ class CatPastelesController extends Controller
      */
     public function index()
     {
-        //
+        $catPasteless = catPasteles::all();
+        $array = [];
+        foreach ($catPasteless as $catPasteles) {
+            $array[] = [
+                'id' => $catPasteles->id,
+                'title' => $catPasteles->title,
+                'description' => $catPasteles->description,
+                'image' => $catPasteles->image,
+                'price' => $catPasteles->price,
+                'available' => $catPasteles->available,
+                'rating' => $catPasteles->rating,
+                'discount' => $catPasteles->discount,
+            ];
+        }
+        return response()->json($array);
     }
 
     /**
@@ -29,7 +43,20 @@ class CatPastelesController extends Controller
      */
     public function store(StorecatPastelesRequest $request)
     {
-        //
+        $catPasteles = new catPasteles;
+        $catPasteles->title = $request->title;
+        $catPasteles->description = $request->description;
+        $catPasteles->image = $request->image;
+        $catPasteles->price = $request->price;
+        $catPasteles->available = $request->available;
+        $catPasteles->rating = $request->rating;
+        $catPasteles->discount = $request->discount;
+        $catPasteles->save();
+        $data = [
+            'menssage' => 'Item creado satifactoriamente',
+            'data' => $catPasteles
+        ];
+        return response()->json($data);
     }
 
     /**
@@ -37,7 +64,11 @@ class CatPastelesController extends Controller
      */
     public function show(catPasteles $catPasteles)
     {
-        //
+        $data = [
+            'message' => 'Detalles de Item',
+            'data' => $catPasteles,
+        ];
+        return response()->json($data);
     }
 
     /**
@@ -53,7 +84,19 @@ class CatPastelesController extends Controller
      */
     public function update(UpdatecatPastelesRequest $request, catPasteles $catPasteles)
     {
-        //
+        $catPasteles->title = $request->title;
+        $catPasteles->description = $request->description;
+        $catPasteles->image = $request->image;
+        $catPasteles->price = $request->price;
+        $catPasteles->available = $request->available;
+        $catPasteles->rating = $request->rating;
+        $catPasteles->discount = $request->discount;
+        $catPasteles->save();
+        $data = [
+            'menssage' => 'Item actualizado correctamente',
+            'client' => $catPasteles
+        ];
+        return response()->json($data);
     }
 
     /**
@@ -61,6 +104,11 @@ class CatPastelesController extends Controller
      */
     public function destroy(catPasteles $catPasteles)
     {
-        //
+        $catPasteles->delete();
+        $data = [
+            'menssage' => 'Item eliminado correctamente',
+            'client' => $catPasteles
+        ];
+        return response()->json($data);
     }
 }

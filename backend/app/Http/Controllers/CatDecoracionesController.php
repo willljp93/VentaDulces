@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\catDecoraciones;
 use App\Http\Requests\StorecatDecoracionesRequest;
 use App\Http\Requests\UpdatecatDecoracionesRequest;
+use \Illuminate\Http\Response;
 
 class CatDecoracionesController extends Controller
 {
@@ -13,7 +14,9 @@ class CatDecoracionesController extends Controller
      */
     public function index()
     {
-        //
+        // $catdecoraciones = catDecoraciones::all();
+        // return response()->json($catdecoraciones);
+        return response()->json(catdecoraciones::paginate(6));
     }
 
     /**
@@ -29,7 +32,11 @@ class CatDecoracionesController extends Controller
      */
     public function store(StorecatDecoracionesRequest $request)
     {
-        //
+        $catdecoraciones = Catdecoraciones::create($request->all());
+        return response()->json(
+            data: ['catdecoraciones' => $catdecoraciones],
+            status: Response::HTTP_CREATED
+        );
     }
 
     /**
@@ -37,7 +44,12 @@ class CatDecoracionesController extends Controller
      */
     public function show(catDecoraciones $catDecoraciones)
     {
-        //
+        $data = [
+            'message' => 'Detalles de Featureds',
+            'client' => $catDecoraciones,
+        ];
+        return response()->json($data);
+        // return response()->json($catDecoraciones);
     }
 
     /**
@@ -53,7 +65,11 @@ class CatDecoracionesController extends Controller
      */
     public function update(UpdatecatDecoracionesRequest $request, catDecoraciones $catDecoraciones)
     {
-        //
+        $catDecoraciones->update(attributes: $request->all());
+        return response()->json(
+            data: ['catdecoraciones' => $catDecoraciones],
+            status: Response::HTTP_CREATED
+        );
     }
 
     /**
@@ -61,6 +77,11 @@ class CatDecoracionesController extends Controller
      */
     public function destroy(catDecoraciones $catDecoraciones)
     {
-        //
+        $catDecoraciones->delete();
+        $data = [
+            'menssage' => 'Featured eliminado correctamente',
+            'client' => $catDecoraciones
+        ];
+        return response()->json($data);
     }
 }

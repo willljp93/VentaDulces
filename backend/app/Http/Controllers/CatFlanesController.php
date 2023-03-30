@@ -13,7 +13,21 @@ class CatFlanesController extends Controller
      */
     public function index()
     {
-        //
+        $catFlaness = catFlanes::all();
+        $array = [];
+        foreach ($catFlaness as $catFlanes) {
+            $array[] = [
+                'id' => $catFlanes->id,
+                'title' => $catFlanes->title,
+                'description' => $catFlanes->description,
+                'image' => $catFlanes->image,
+                'price' => $catFlanes->price,
+                'available' => $catFlanes->available,
+                'rating' => $catFlanes->rating,
+                'discount' => $catFlanes->discount,
+            ];
+        }
+        return response()->json($array);
     }
 
     /**
@@ -29,7 +43,20 @@ class CatFlanesController extends Controller
      */
     public function store(StorecatFlanesRequest $request)
     {
-        //
+        $catFlanes = new catFlanes;
+        $catFlanes->title = $request->title;
+        $catFlanes->description = $request->description;
+        $catFlanes->image = $request->image;
+        $catFlanes->price = $request->price;
+        $catFlanes->available = $request->available;
+        $catFlanes->rating = $request->rating;
+        $catFlanes->discount = $request->discount;
+        $catFlanes->save();
+        $data = [
+            'menssage' => 'catFlanes creado satifactoriamente',
+            'data' => $catFlanes
+        ];
+        return response()->json($data);
     }
 
     /**
@@ -37,7 +64,11 @@ class CatFlanesController extends Controller
      */
     public function show(catFlanes $catFlanes)
     {
-        //
+        $data = [
+            'message' => 'Detalles de catFlanes',
+            'data' => $catFlanes,
+        ];
+        return response()->json($data);
     }
 
     /**
@@ -53,7 +84,19 @@ class CatFlanesController extends Controller
      */
     public function update(UpdatecatFlanesRequest $request, catFlanes $catFlanes)
     {
-        //
+        $catFlanes->title = $request->title;
+        $catFlanes->description = $request->description;
+        $catFlanes->image = $request->image;
+        $catFlanes->price = $request->price;
+        $catFlanes->available = $request->available;
+        $catFlanes->rating = $request->rating;
+        $catFlanes->discount = $request->discount;
+        $catFlanes->save();
+        $data = [
+            'menssage' => 'Featured actualizado correctamente',
+            'client' => $catFlanes
+        ];
+        return response()->json($data);
     }
 
     /**
@@ -61,6 +104,11 @@ class CatFlanesController extends Controller
      */
     public function destroy(catFlanes $catFlanes)
     {
-        //
+        $catFlanes->delete();
+        $data = [
+            'menssage' => 'Featured eliminado correctamente',
+            'client' => $catFlanes
+        ];
+        return response()->json($data);
     }
 }

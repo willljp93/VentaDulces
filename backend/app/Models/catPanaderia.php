@@ -8,4 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class catPanaderia extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'title',
+        'description',
+        'image',
+        'price',
+        'available',
+        'rating',
+        'discount'
+    ];
 }

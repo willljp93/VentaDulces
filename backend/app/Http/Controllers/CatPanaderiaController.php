@@ -13,7 +13,21 @@ class CatPanaderiaController extends Controller
      */
     public function index()
     {
-        //
+        $catPanaderias = catPanaderia::all();
+        $array = [];
+        foreach ($catPanaderias as $catPanaderia) {
+            $array[] = [
+                'id' => $catPanaderia->id,
+                'title' => $catPanaderia->title,
+                'description' => $catPanaderia->description,
+                'image' => $catPanaderia->image,
+                'price' => $catPanaderia->price,
+                'available' => $catPanaderia->available,
+                'rating' => $catPanaderia->rating,
+                'discount' => $catPanaderia->discount,
+            ];
+        }
+        return response()->json($array);
     }
 
     /**
@@ -29,7 +43,20 @@ class CatPanaderiaController extends Controller
      */
     public function store(StorecatPanaderiaRequest $request)
     {
-        //
+        $catPanaderia = new catPanaderia;
+        $catPanaderia->title = $request->title;
+        $catPanaderia->description = $request->description;
+        $catPanaderia->image = $request->image;
+        $catPanaderia->price = $request->price;
+        $catPanaderia->available = $request->available;
+        $catPanaderia->rating = $request->rating;
+        $catPanaderia->discount = $request->discount;
+        $catPanaderia->save();
+        $data = [
+            'menssage' => 'Item creado satifactoriamente',
+            'data' => $catPanaderia
+        ];
+        return response()->json($data);
     }
 
     /**
@@ -37,7 +64,11 @@ class CatPanaderiaController extends Controller
      */
     public function show(catPanaderia $catPanaderia)
     {
-        //
+        $data = [
+            'message' => 'Detalles de Item',
+            'data' => $catPanaderia,
+        ];
+        return response()->json($data);
     }
 
     /**
@@ -53,7 +84,19 @@ class CatPanaderiaController extends Controller
      */
     public function update(UpdatecatPanaderiaRequest $request, catPanaderia $catPanaderia)
     {
-        //
+        $catPanaderia->title = $request->title;
+        $catPanaderia->description = $request->description;
+        $catPanaderia->image = $request->image;
+        $catPanaderia->price = $request->price;
+        $catPanaderia->available = $request->available;
+        $catPanaderia->rating = $request->rating;
+        $catPanaderia->discount = $request->discount;
+        $catPanaderia->save();
+        $data = [
+            'menssage' => 'Item actualizado correctamente',
+            'client' => $catPanaderia
+        ];
+        return response()->json($data);
     }
 
     /**
@@ -61,6 +104,11 @@ class CatPanaderiaController extends Controller
      */
     public function destroy(catPanaderia $catPanaderia)
     {
-        //
+        $catPanaderia->delete();
+        $data = [
+            'menssage' => 'Item eliminado correctamente',
+            'client' => $catPanaderia
+        ];
+        return response()->json($data);
     }
 }

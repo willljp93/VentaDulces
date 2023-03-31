@@ -23,9 +23,6 @@
   </div>
 </template>
 
-<script>
-import { ref } from "vue";
-
 <script setup>
 import { ref, watch } from "vue";
 

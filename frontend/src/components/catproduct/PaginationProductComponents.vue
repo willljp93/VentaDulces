@@ -4,55 +4,44 @@
       v-model="currentPage"
       :min="1"
       :max="totalPages"
-      :color="paginationColor"
-      :size="paginationSize"
-      :input="paginationInput"
+      :color="color"
+      :size="size"
+      :input="input"
       input-class="secondary"
     >
     </q-pagination>
   </div>
 </template>
 
-<script>
-import { ref, computed } from "vue";
-export default {
-  name: "ListCardProductComponents",
-  props: {
-    perPage: {
-      type: Number,
-      default: 6,
-    },
-    paginationColor: {
-      type: String,
-      default: "primary",
-    },
-    paginationSize: {
-      type: String,
-      default: "md",
-    },
-    paginationInput: {
-      type: Boolean,
-      default: true,
-    },
-  },
-  setup(props) {
-    const currentPage = ref(1);
+<script setup>
+import { ref, defineProps, defineEmits, watch } from "vue";
 
-    const totalPages = computed(() => {
-      return Math.ceil(filteredItems.value.length / props.perPage);
-    });
-
-    const displayedItems = computed(() => {
-      const startIndex = (currentPage.value - 1) * props.perPage;
-      const endIndex = startIndex + props.perPage;
-      return filteredItems.value.slice(startIndex, endIndex);
-    });
-    return {
-      currentPage,
-      filteredItems,
-      totalPages,
-      displayedItems,
-    };
+const props = defineProps({
+  currentPage: {
+    type: Number,
+    required: true,
   },
-};
+  totalPages: {
+    type: Number,
+    required: true,
+  },
+  color: {
+    type: String,
+    default: "primary",
+  },
+  size: {
+    type: String,
+    default: "md",
+  },
+  input: {
+    type: Boolean,
+    default: true,
+  },
+});
+
+const emit = defineEmits(["update:currentPage"]);
+
+const currentPage = ref(props.currentPage);
+
+watch(currentPage, (newValue) => emit("update:currentPage", newValue));
 </script>

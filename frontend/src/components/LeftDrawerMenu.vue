@@ -18,7 +18,7 @@
         label="Productos"
         caption="por categorias"
       >
-        <q-item clickable inset-level="1" v-ripple to="/pasteles">
+        <q-item clickable :inset-level=inset v-ripple to="/pasteles">
           <q-item-section avatar>
             <q-icon color="secondary" name="las la-birthday-cake" />
           </q-item-section>
@@ -26,7 +26,7 @@
           <q-item-section class="text-secondary">Pasteles</q-item-section>
         </q-item>
 
-        <q-item clickable inset-level="1" v-ripple to="/flanes">
+        <q-item clickable :inset-level=inset v-ripple to="/flanes">
           <q-item-section avatar>
             <q-icon color="secondary" name="las la-drum-steelpan" />
           </q-item-section>
@@ -34,7 +34,7 @@
           <q-item-section class="text-secondary">Flanes</q-item-section>
         </q-item>
 
-        <q-item clickable inset-level="1" v-ripple to="/reposteria">
+        <q-item clickable :inset-level=inset v-ripple to="/reposteria">
           <q-item-section avatar>
             <q-icon color="secondary" name="las la-cookie" />
           </q-item-section>
@@ -42,7 +42,7 @@
           <q-item-section class="text-secondary">Repostería</q-item-section>
         </q-item>
 
-        <q-item clickable inset-level="1" v-ripple to="/panaderia">
+        <q-item clickable :inset-level=inset v-ripple to="/panaderia">
           <q-item-section avatar>
             <q-icon color="secondary" name="las la-bread-slice" />
           </q-item-section>
@@ -50,7 +50,7 @@
           <q-item-section class="text-secondary">Panadería</q-item-section>
         </q-item>
 
-        <q-item clickable inset-level="1" v-ripple to="/decoraciones">
+        <q-item clickable :inset-level=inset v-ripple to="/decoraciones">
           <q-item-section avatar>
             <q-icon color="secondary" name="las la-hanukiah" />
           </q-item-section>
@@ -89,10 +89,15 @@
 </template>
 
 <script>
+import { ref } from 'vue';
+
 export default {
   name: "LeftDrawerMenu",
   setup() {
-    return {};
+    const inset = ref(1)
+    return {
+      inset
+    };
   },
 };
 </script>

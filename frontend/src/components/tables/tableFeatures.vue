@@ -322,7 +322,7 @@ const editFeatured = async (id) => {
     return;
   }
   try {
-    await api.put(`featureds/${id}`, tempFeatured.value);
+    await api.patch(`featureds/${id}`, tempFeatured.value);
     $q.notify({
       message: "Editado con éxito",
       icon: "check",

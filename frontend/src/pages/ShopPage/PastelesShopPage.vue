@@ -1,180 +1,198 @@
 <template>
-  <!-- nombre -->
-  <div>
-    <h4 class="text-center">Pasteles</h4>
-  </div>
+  <div class="fit row wrap justify-center items-center content-center">
+    <!-- barra de busqueda -->
+    <div class="col-8 q-pa-lg flex-center">
+      <q-input
+        dense
+        standout="bg-primary text-white"
+        rounded
+        type="search"
+        placeholder="Buscar"
+        v-model="search"
+        input-class="text-right"
+        class="q-ml-xs"
+      >
+        <template v-slot:append>
+          <q-icon v-if="search === ''" name="search" />
+          <q-icon
+            v-else
+            name="clear"
+            class="cursor-pointer"
+            @click="search = ''"
+          />
+        </template>
+      </q-input>
+    </div>
 
-  <!-- barra de busqueda -->
-  <div class="col-8 q-pa-lg flex-center">
-    <q-input
-      dense
-      standout="bg-primary text-white"
-      rounded
-      type="search"
-      placeholder="Buscar"
-      v-model="search"
-      input-class="text-right"
-      class="q-ml-xs"
+    <!-- lista de cards -->
+    <div
+      class="row q-gutter-md justify-evenly items-center content-center col-11"
     >
-      <template v-slot:append>
-        <q-icon v-if="search === ''" name="search" />
-        <q-icon
+      <q-card
+        class="my-card"
+        v-for="item in displayedItems"
+        :key="item.id"
+        @mouseover="hoveredCard = item.id"
+        @mouseleave="hoveredCard = null"
+        :class="{ 'shadow-2': hoveredCard === item.id }"
+      >
+        <q-img class="q-img" :src="item.image" :alt="item.title" />
+
+        <q-badge
+          class="q-badge"
+          v-if="item.discount"
+          color="info"
+          floating
+          transparent
+        >
+          {{ item.discount }}%
+        </q-badge>
+
+        <q-badge
+          class="q-badge"
           v-else
-          name="clear"
-          class="cursor-pointer"
-          @click="search = ''"
+          color="negative"
+          floating
+          transparent
+          label="Agotado"
         />
-      </template>
-    </q-input>
-  </div>
 
-  <!-- lista de cards -->
-  <ProductCard :props="products" />
-  <!-- paginacion -->
-  <div class="col-4 q-pa-lg flex flex-center">
-    <q-pagination
-      v-model="currentPage"
-      :min="1"
-      :max="totalPages"
-      :color="paginationColor"
-      :size="paginationSize"
-      :input="paginationInput"
-      input-class="secondary"
-    >
-    </q-pagination>
+        <q-card-section>
+          <q-btn
+            fab
+            color="primary"
+            icon="shopping_bag"
+            class="absolute"
+            style="top: 0; right: 12px; transform: translateY(-50%)"
+            @click="buyProduct(item.id)"
+          />
+
+          <div class="row no-wrap items-center">
+            <q-item-label header="" class="col text-h6 ellipsis">
+              {{ item.title }}
+            </q-item-label>
+            <div
+              class="col-auto text-grey text-caption row no-wrap items-center"
+            >
+              Comprar
+            </div>
+          </div>
+
+          <div align="center">
+            <q-rating
+              v-model="stars"
+              icon="star_border"
+              icon-selected="star"
+              :max="5"
+              size="1.5em"
+              v-if="item.rating"
+              :value="item.rating"
+              :readonly="false"
+            />
+          </div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          <div class="text-subtitle1 text-right">$ {{ item.price }}</div>
+          <div class="text-caption text-grey text-center">
+            {{ item.description }}
+          </div>
+        </q-card-section>
+
+        <q-separator />
+
+        <q-card-actions vertical align="center">
+          <q-btn
+            flat
+            icon="shopping_cart"
+            color="primary"
+            label="Agregar al carrito"
+            @click="addToCart(item.id)"
+          />
+        </q-card-actions>
+      </q-card>
+    </div>
+    <!-- paginacion -->
+    <div class="col-4 q-pa-lg flex flex-center">
+      <q-pagination
+        v-model="currentPage"
+        :min="1"
+        :max="totalPages"
+        color="primary"
+        size="md"
+        input
+        input-class="secondary"
+      >
+      </q-pagination>
+    </div>
   </div>
 </template>
 
 <script setup>
-import ProductCard from "src/components/ProductCard.vue";
+import { api } from "src/boot/axios";
+import { ref, computed, onMounted } from "vue";
 
-// export default {
-//   name: "PastelesShopPage",
-//   components: {
-//     ProductCard,
-//   },
-//   data() {
-//     return {
-const products = [
-  {
-    id: 1,
-    title: "Pastel 1",
-    description: "Descripción del Pastel 1",
-    image: "/src/assets/pasteles.jpeg",
-    price: 9.99,
-    available: true,
-    rating: 4,
-  },
-  {
-    id: 2,
-    title: "Pastel 2",
-    description: "Descripción del Pastel 2",
-    image: "/src/assets/pasteles.jpeg",
-    price: 12.99,
-    available: false,
-    rating: 2,
-    discount: 20,
-  },
-  {
-    id: 3,
-    title: "Pastel 3",
-    description: "Descripción del Pastel 3",
-    image: "/src/assets/pasteles.jpeg",
-    price: 24.99,
-    available: true,
-    rating: 5,
-  },
-  {
-    id: 4,
-    title: "Pastel 4",
-    description: "Descripción del Pastel 4",
-    image: "/src/assets/pasteles.jpeg",
-    price: 24.99,
-    available: true,
-    rating: 5,
-  },
-  {
-    id: 5,
-    title: "Pastel 5",
-    description: "Descripción del Pastel 5",
-    image: "/src/assets/pasteles.jpeg",
-    price: 24.99,
-    available: true,
-    rating: 5,
-  },
-  {
-    id: 6,
-    title: "Pastel 6",
-    description: "Descripción del Pastel 6",
-    image: "/src/assets/pasteles.jpeg",
-    price: 24.99,
-    available: true,
-    rating: 5,
-  },
-  {
-    id: 7,
-    title: "Pastel 7",
-    description: "Descripción del Pastel 7",
-    image: "/src/assets/pasteles.jpeg",
-    price: 24.99,
-    available: true,
-    rating: 5,
-  },
-  {
-    id: 8,
-    title: "Pastel 8",
-    description: "Descripción del Pastel 8",
-    image: "/src/assets/pasteles.jpeg",
-    price: 24.99,
-    available: true,
-    rating: 5,
-  },
-  {
-    id: 9,
-    title: "Pastel 9",
-    description: "Descripción del Pastel 9",
-    image: "/src/assets/pasteles.jpeg",
-    price: 24.99,
-    available: true,
-    rating: 5,
-  },
-  {
-    id: 10,
-    title: "Pastel 10",
-    description: "Descripción del Pastel 10",
-    image: "/src/assets/pasteles.jpeg",
-    price: 24.99,
-    available: true,
-    rating: 5,
-  },
-  {
-    id: 11,
-    title: "Pastel 11",
-    description: "Descripción del Pastel 11",
-    image: "/src/assets/pasteles.jpeg",
-    price: 24.99,
-    available: true,
-    rating: 5,
-  },
-  {
-    id: 12,
-    title: "Pastel 12",
-    description: "Descripción del Pastel 12",
-    image: "/src/assets/pasteles.jpeg",
-    price: 24.99,
-    available: true,
-    rating: 5,
-  },
-];
-// };
-// },
-// };
+const search = ref("");
+const stars = ref(0);
+const products = ref([]);
+const cart = ref({
+  items: [],
+  total: 0,
+});
+const hoveredCard = ref(null);
+const currentPage = ref(1);
+const perPage = ref(6);
+const maxPrice = ref(Infinity);
+
+const filteredItems = computed(() => {
+  return products.value.filter(
+    (item) =>
+      item.title.toLowerCase().includes(search.value.toLowerCase()) &&
+      item.price <= maxPrice.value
+  );
+});
+const totalPages = computed(() => {
+  return Math.ceil(filteredItems.value.length / perPage.value);
+});
+
+const displayedItems = computed(() => {
+  const startIndex = (currentPage.value - 1) * perPage.value;
+  const endIndex = startIndex + perPage.value;
+  return filteredItems.value.slice(startIndex, endIndex);
+});
+
+const addToCart = (id) => {
+  console.log(id);
+};
+const buyProduct = (id) => {
+  console.log(id);
+};
+
+onMounted(async () => {
+  await getPasteles();
+});
+
+const getPasteles = async () => {
+  const { data } = await api.get("catpasteles");
+  products.value = data;
+};
+
 </script>
-
 <style scoped lang="scss">
-.product-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+.my-card {
+  width: 100%;
+  max-width: 300px;
+  transition: box-shadow 0.2s ease-in-out;
+}
+.q-img {
+  height: 150px;
+  object-fit: cover;
+}
+.shadow-2 {
+  box-shadow: 0px 0px 10px 2px #00000033;
+  transform: translateY(-5px);
+}
+.q-badge {
+  margin-right: 8px;
 }
 </style>

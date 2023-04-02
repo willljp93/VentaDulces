@@ -127,84 +127,70 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { ref, computed } from "vue";
-export default {
-  name: "ListCardProductComponents",
-  props: {
-    items: {
-      type: Array,
-      required: true,
-    },
-    maxPrice: {
-      type: Number,
-      default: Infinity,
-    },
-    perPage: {
-      type: Number,
-      default: 6,
-    },
-    paginationColor: {
-      type: String,
-      default: "primary",
-    },
-    paginationSize: {
-      type: String,
-      default: "md",
-    },
-    paginationInput: {
-      type: Boolean,
-      default: true,
-    },
+
+const search = ref("");
+const stars = ref(0);
+const cart = ref({
+  items: [],
+  total: 0,
+});
+const hoveredCard = ref(null);
+const currentPage = ref(1);
+
+const props = defineProps({
+  items: {
+    type: Array,
+    required: true,
   },
-  setup(props) {
-    const search = ref("");
-    const cart = ref({
-      items: [],
-      total: 0,
-    });
-    const hoveredCard = ref(null);
-    const currentPage = ref(1);
-
-    const filteredItems = computed(() => {
-      return props.items.filter(
-        (item) =>
-          item.title.toLowerCase().includes(search.value.toLowerCase()) &&
-          item.price <= props.maxPrice
-      );
-    });
-    const totalPages = computed(() => {
-      return Math.ceil(filteredItems.value.length / props.perPage);
-    });
-
-    const displayedItems = computed(() => {
-      const startIndex = (currentPage.value - 1) * props.perPage;
-      const endIndex = startIndex + props.perPage;
-      return filteredItems.value.slice(startIndex, endIndex);
-    });
-
-    const addToCart = (product) => {
-      cart.value.items.push({
-        product: product,
-        quantity: 1,
-      });
-      cart.value.total += product.price;
-    };
-    return {
-      search,
-      cart,
-      stars: ref(5),
-      hoveredCard,
-      currentPage,
-      filteredItems,
-      totalPages,
-      displayedItems,
-      addToCart,
-    };
+  maxPrice: {
+    type: Number,
+    default: Infinity,
   },
+  perPage: {
+    type: Number,
+    default: 6,
+  },
+  paginationColor: {
+    type: String,
+    default: "primary",
+  },
+  paginationSize: {
+    type: String,
+    default: "md",
+  },
+  paginationInput: {
+    type: Boolean,
+    default: true,
+  },
+});
+
+const filteredItems = computed(() => {
+  return props.items.filter(
+    (item) =>
+      item.title.toLowerCase().includes(search.value.toLowerCase()) &&
+      item.price <= props.maxPrice
+  );
+});
+const totalPages = computed(() => {
+  return Math.ceil(filteredItems.value.length / props.perPage);
+});
+
+const displayedItems = computed(() => {
+  const startIndex = (currentPage.value - 1) * props.perPage;
+  const endIndex = startIndex + props.perPage;
+  return filteredItems.value.slice(startIndex, endIndex);
+});
+
+const addToCart = (product) => {
+  cart.value.items.push({
+    product: product,
+    quantity: 1,
+  });
+  cart.value.total += product.price;
 };
 </script>
-
 <style scoped lang="scss">
 .my-card {
   width: 100%;

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="q-ma" >
     <q-list bordered class="rounded-borders">
       <q-item clickable v-ripple to="/">
         <q-item-section avatar>

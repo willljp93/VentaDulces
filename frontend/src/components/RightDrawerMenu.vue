@@ -1,12 +1,9 @@
 <template>
-  <div>My component</div>
+  <div>
+    <CarritoComponents />
+  </div>
 </template>
 
-<script>
-export default {
-  name: "RightDrawerMenu",
-  setup() {
-    return {};
-  },
-};
+<script setup>
+import CarritoComponents from './CarritoComponents.vue';
 </script>

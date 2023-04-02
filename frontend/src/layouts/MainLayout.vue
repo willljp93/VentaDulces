@@ -65,8 +65,7 @@
 
     <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered>
       <q-list>
-        <q-item-label header> </q-item-label>
-
+        <!-- <q-item-label header>dfg </q-item-label> -->
         <LeftDrawerMenu />
       </q-list>
     </q-drawer>

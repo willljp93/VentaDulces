@@ -4,29 +4,35 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateCatFlanesTable extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
-    public function up(): void
+    public function up()
     {
-        Schema::create('promotions', function (Blueprint $table) {
+        Schema::create('cat_flanes', function (Blueprint $table) {
             $table->id();
             $table->string('title');
             $table->string('description');
-            $table->integer('discount')->nullable();
-            $table->date('expires');
             $table->string('image');
+            $table->integer('price');
+            $table->tinyInteger('available');
+            $table->integer('rating');
+            $table->integer('discount')->nullable();
             $table->timestamps();
         });
     }
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
-        Schema::dropIfExists('promotions');
+        Schema::dropIfExists('cat_flanes');
     }
-};
+}

@@ -4,31 +4,34 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateFeaturedsTable extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
-    public function up(): void
+    public function up()
     {
-        Schema::create('cat_flanes', function (Blueprint $table) {
+        Schema::create('featureds', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->string('name');
             $table->string('description');
-            $table->string('image');
             $table->integer('price');
-            $table->boolean('available');
             $table->integer('rating');
             $table->integer('discount')->nullable();
+            $table->string('image');
             $table->timestamps();
         });
     }
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
-        Schema::dropIfExists('cat_flanes');
+        Schema::dropIfExists('featureds');
     }
-};
+}

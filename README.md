@@ -1,4 +1,5 @@
 -----------------------------------------------
+{
 # Laravel 10 backend API
 cd .\backend\ 
   # Instalar dependencias
@@ -12,14 +13,15 @@ php artisan key:generate
 php artisan migrate:fresh --seed
   # correr Laravel API
 php artisan server
-
+}
 -----------------------------------------------
+{
 # Quasar Framework 2 Frontend
 cd
   # Instalar dependencias
 pnpm install
   # correr quasar framework
 quasar dev
-
+}
 -----------------------------------------------
 

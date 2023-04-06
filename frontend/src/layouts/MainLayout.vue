@@ -11,20 +11,6 @@
           Eccomerce William
         </q-toolbar-title>
 
-        <q-input
-          class="q-pa-xs col-5"
-          v-model="search"
-          rounded
-          dark
-          standout
-          dense
-          type="search"
-        >
-          <template v-slot:append>
-            <q-icon name="search" />
-          </template>
-        </q-input>
-
         <div class="row col justify-end items-center content-end">
           <q-btn
             dense

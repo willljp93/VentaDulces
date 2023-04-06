@@ -173,7 +173,7 @@ onMounted(async () => {
 });
 
 const getFlanes = async () => {
-  const { data } = await api.get("catflanes");
+  const { data } = await api.get("/api/catflanes");
   products.value = data;
 };
 

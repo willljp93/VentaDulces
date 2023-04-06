@@ -173,7 +173,7 @@ onMounted(async () => {
 });
 
 const getReposteria = async () => {
-  const { data } = await api.get("catreposteria");
+  const { data } = await api.get("/api/catreposteria");
   products.value = data;
 };
 

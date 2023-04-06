@@ -10,7 +10,7 @@
 
 const { configure } = require("quasar/wrappers");
 
-module.exports = configure(function (/* ctx */) {
+module.exports = configure(function (ctx) {
   return {
     eslint: {
       // fix: true,
@@ -51,6 +51,22 @@ module.exports = configure(function (/* ctx */) {
       target: {
         browser: ["es2019", "edge88", "firefox78", "chrome87", "safari13.1"],
         node: "node16",
+      },
+
+      devServer: {
+        server: {
+          type: 'http',
+        },
+        port: 9000,
+        open: true, // opens browser window automatically
+        proxy: [
+          {
+            context: ['/sanctum', '/register', '/login', '/logout', '/api',],
+            target: 'http://localhost:8000',
+            cookieDomainRewrite:
+              ctx.modeName === 'capacitor' ? '10.32.3.2' : 'localhost',
+          },
+        ],
       },
 
       vueRouterMode: "hash", // available values: 'hash', 'history'

@@ -1,175 +1,151 @@
 <template>
-  <div class="login-page">
-    <q-card class="login-card" flat>
-      <q-card-section class="login-card-section">
-        <h1 class="login-title">Bienvenido</h1>
-        <form>
+  <div class="auth-page">
+    <div class="card">
+      <h6 v-if="isRegister">Registro de usuario</h6>
+      <h6 v-else>Iniciar sesión</h6>
+      <q-form v-if="isRegister" @submit.prevent="submitRegister">
+        <div class="form-group">
+          <label for="name">Nombre:</label>
           <q-input
-            v-model="email"
-            type="email"
-            label="Correo Electrónico"
             dense
-            outlined
-            class="input"
+            type="text"
+            id="name"
+            v-model="registerForm.name"
+            required
           />
-          <q-input
-            v-model="password"
-            type="password"
-            label="Contraseña"
-            dense
-            outlined
-            class="input"
-          />
-          <q-checkbox
-            v-model="rememberMe"
-            label="Recordarme"
-            dense
-            color="primary"
-            class="remember-me"
-          />
-          <q-btn type="submit" color="primary" label="Iniciar sesión" />
-        </form>
-        <div class="links-section">
-          <q-btn
-            @click="forgotPassword"
-            label="¿Olvidaste tu contraseña?"
-            flat
-            text-color="primary"
-          />
-          <div class="register-link">
-            ¿No tienes cuenta?
-            <q-btn
-              @click="register"
-              label="Regístrate aquí"
-              color="primary"
-              dense
-              to="registro"
-            />
-          </div>
         </div>
-      </q-card-section>
-    </q-card>
+        <div class="form-group">
+          <label for="email">Correo electrónico:</label>
+          <q-input
+            dense
+            type="email"
+            id="email"
+            v-model="registerForm.email"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="password">Contraseña:</label>
+          <q-input
+            dense
+            type="password"
+            id="password"
+            v-model="registerForm.password"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="password_confirmation">Confirmar contraseña:</label>
+          <q-input
+            dense
+            type="password"
+            id="password_confirmation"
+            v-model="registerForm.password_confirmation"
+            required
+          />
+        </div>
+        <q-btn
+          class="q-ma-xs"
+          type="submit"
+          color="primary"
+          icon="login"
+          label="Registrarse"
+        />
+      </q-form>
+      <q-form v-else @submit.prevent="submitLogin">
+        <div class="form-group">
+          <label for="email">Correo electrónico:</label>
+          <q-input
+            dense
+            type="email"
+            id="email"
+            v-model="loginForm.email"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="password">Contraseña:</label>
+          <q-input
+            dense
+            type="password"
+            id="password"
+            v-model="loginForm.password"
+            required
+          />
+        </div>
+        <q-btn type="submit">Iniciar sesión</q-btn>
+      </q-form>
+      <div v-if="isRegister">
+        ¿Ya tienes una cuenta?
+        <a href="#" @click.prevent="toggleForm(false)">Iniciar sesión</a>
+      </div>
+      <div v-else>
+        ¿No tienes una cuenta?
+        <a href="#" @click.prevent="toggleForm(true)">Regístrate</a>
+      </div>
+    </div>
   </div>
 </template>
-
 <script setup>
-import { defineComponent, ref } from "vue";
-const email = ref("");
-const password = ref("");
-const rememberMe = ref(false);
+import { reactive, ref } from "vue";
+import api from "axios";
+import { useRouter } from "vue-router";
 
-const forgotPassword = () => {
-  // Lógica para redirigir al usuario a la página de recuperación de contraseña
-};
+const router = useRouter();
+const isRegister = ref(true);
+const loginForm = reactive({
+  email: "",
+  password: "",
+});
+
+const registerForm = reactive({
+  name: "",
+  email: "",
+  password: "",
+  password_confirmation: "",
+});
+
+async function submitLogin() {
+  try {
+    await api.post("http://localhost:8000/login", loginForm);
+    router.push({ path: "/" });
+  } catch (error) {
+    console.log("MI ERROR: ", error);
+  }
+}
+
+async function submitRegister() {
+  try {
+    await api.post("http://localhost:8000/register", registerForm);
+    router.push({ path: "/" });
+  } catch (error) {
+    console.log("MI ERROR: ", error);
+  }
+}
+
+function toggleForm(value) {
+  isRegister.value = value;
+}
 </script>
-
-<style scoped lang="scss">
-.login-page {
+<style>
+.auth-page {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-image: linear-gradient(to bottom right, #f15a24, #ffcd00);
 }
 
-.login-card {
-  max-width: 400px;
-  width: 100%;
-  background-color: #fff;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-  border-radius: 4px;
-  transition: transform 0.3s ease-in-out;
-  &:hover {
-    transform: scale(1.05);
-  }
+.card {
+  width: 400px;
+  padding: 20px;
+  border: 1px solid #000000;
+  border-radius: 5px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  background-color: rgb(192, 212, 255);
 }
 
-.login-card-section {
-  padding: 2rem;
-}
-
-.login-title {
-  font-size: 2rem;
-  margin-bottom: 2rem;
-  text-align: center;
-  color: #1976d2;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-}
-
-.input {
-  margin-bottom: 1rem;
-  width: 100%;
-
-  q-inner {
-    border-color: #1976d2;
-  }
-
-  q-label {
-    color: #1976d2;
-  }
-}
-
-.remember-me {
-  margin-top: 1rem;
-}
-
-button[type="submit"] {
-  margin-top: 2rem;
-  width: 100%;
-  max-width: 300px;
-  text-transform: uppercase;
-  font-size: 1rem;
-  font-weight: 600;
-  letter-spacing: 0.1rem;
-  background-color: #1976d2;
-  color: #fff;
-  border-radius: 4px;
-  border: none;
-  transition: transform 0.3s ease-in-out;
-
-  &:hover {
-    transform: scale(1.05);
-  }
-
-  &:focus {
-    outline: none;
-  }
-}
-
-.links-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin-top: 1rem;
-}
-
-.register-link {
-  margin-top: 2rem;
-  text-align: center;
-
-  q-btn {
-    margin-left: 0.5rem;
-    background-color: #fff;
-    color: #1976d2;
-    border: 2px solid #1976d2;
-    border-radius: 4px;
-    text-transform: uppercase;
-    font-size: 1rem;
-    font-weight: 600;
-    letter-spacing: 0.1rem;
-    transition: transform 0.3s ease-in-out;
-
-    &:hover {
-      transform: scale(1.05);
-    }
-  }
+a {
+  color: #007bff;
+  cursor: pointer;
 }
 </style>

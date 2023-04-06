@@ -173,7 +173,7 @@ onMounted(async () => {
 });
 
 const getPanaderia = async () => {
-  const { data } = await api.get("catpanaderia");
+  const { data } = await api.get("/api/catpanaderia");
   products.value = data;
 };
 

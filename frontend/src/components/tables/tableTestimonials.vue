@@ -236,13 +236,13 @@ const openAddDialog = () => {
 };
 
 const getTestimonials = async () => {
-  const { data } = await api.get("testimonials");
+  const { data } = await api.get("/api/testimonials");
   testimonials.value = data;
 };
 
 const addTestimonial = async (newTestimonial) => {
   try {
-    await api.post("testimonials", newTestimonial);
+    await api.post("/api/testimonials", newTestimonial);
     $q.notify({
       message: "Agregado con exito",
       icon: "check",
@@ -269,7 +269,7 @@ const editTestimonial = async (id) => {
     return;
   }
   try {
-    await api.patch(`testimonials/${id}`, tempTestimonials.value);
+    await api.patch(`/api/testimonials/${id}`, tempTestimonials.value);
     $q.notify({
       message: "Editado con éxito",
       icon: "check",
@@ -297,7 +297,7 @@ const deleteTestimonial = async (id) => {
       ok: { color: "negative" },
       persistent: true,
     }).onOk(async () => {
-      await api.delete(`testimonials/${id}`);
+      await api.delete(`/api/testimonials/${id}`);
       $q.notify({
         message: "Eliminado con exito",
         icon: "check",

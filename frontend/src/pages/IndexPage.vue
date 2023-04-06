@@ -313,15 +313,15 @@ const promotions = ref([]);
 const testimonials = ref([]);
 
 const getFeatureds = async () => {
-  const { data } = await api.get("featureds");
+  const { data } = await api.get("/api/featureds");
   featureds.value = data;
 };
 const getPromotions = async () => {
-  const { data } = await api.get("promotions");
+  const { data } = await api.get("/api/promotions");
   promotions.value = data;
 };
 const getTestimonials = async () => {
-  const { data } = await api.get("testimonials");
+  const { data } = await api.get("/api/testimonials");
   testimonials.value = data;
 };
 

@@ -274,13 +274,13 @@ const openAddDialog = () => {
 };
 
 const getFeatureds = async () => {
-  const { data } = await api.get("promotions");
+  const { data } = await api.get("/api/promotions");
   promotions.value = data;
 };
 
 const addFeatured = async (newFeatured) => {
   try {
-    await api.post("promotions", newFeatured);
+    await api.post("/api/promotions", newFeatured);
     $q.notify({
       message: "Agregado con exito",
       icon: "check",
@@ -307,7 +307,7 @@ const editFeatured = async (id) => {
     return;
   }
   try {
-    await api.patch(`promotions/${id}`, tempPromotion.value);
+    await api.patch(`/api/promotions/${id}`, tempPromotion.value);
     $q.notify({
       message: "Editado con éxito",
       icon: "check",
@@ -335,7 +335,7 @@ const deleteFeatured = async (id) => {
       ok: { color: "negative" },
       persistent: true,
     }).onOk(async () => {
-      await api.delete(`promotions/${id}`);
+      await api.delete(`/api/promotions/${id}`);
       $q.notify({
         message: "Eliminado con exito",
         icon: "check",

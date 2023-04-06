@@ -4,8 +4,6 @@ const routes = [
     component: () => import("layouts/MainLayout.vue"),
     children: [
       { path: "", component: () => import("pages/IndexPage.vue") },
-      { path: "login", component: () => import("pages/LoginPage.vue") },
-      { path: "registro", component: () => import("pages/RegistroPage.vue") },
       {
         path: "pasteles",
         component: () => import("src/pages/ShopPage/PastelesShopPage.vue"),
@@ -38,6 +36,12 @@ const routes = [
         path: "contacto",
         component: () => import("pages/ContactoPage.vue"),
       },
+    ],
+  },
+  {
+    path: "/",
+    children: [
+      { path: "login", component: () => import("pages/LoginPage.vue") },
     ],
   },
   {

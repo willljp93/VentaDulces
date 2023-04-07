@@ -111,34 +111,19 @@
   </q-layout>
 </template>
 
-<script>
+<script setup>
 import LeftDrawerMenu from "src/components/LeftDrawerMenu.vue";
 import RightDrawerMenu from "src/components/RightDrawerMenu.vue";
 import { ref } from "vue";
 
-export default {
-  name: "MainLayout",
-  components: {
-    LeftDrawerMenu,
-    RightDrawerMenu,
-  },
-  setup() {
-    const leftDrawerOpen = ref(false);
-    const rightDrawerOpen = ref(false);
+const leftDrawerOpen = ref(false);
+const rightDrawerOpen = ref(false);
 
-    return {
-      search: ref(""),
+function toggleLeftDrawer() {
+  leftDrawerOpen.value = !leftDrawerOpen.value;
+}
 
-      leftDrawerOpen,
-      toggleLeftDrawer() {
-        leftDrawerOpen.value = !leftDrawerOpen.value;
-      },
-
-      rightDrawerOpen,
-      toggleRightDrawer() {
-        rightDrawerOpen.value = !rightDrawerOpen.value;
-      },
-    };
-  },
-};
+function toggleRightDrawer() {
+  rightDrawerOpen.value = !rightDrawerOpen.value;
+}
 </script>

@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StorecatPanaderiaRequest extends FormRequest
+class StoreCatPanaderiaRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,10 +22,10 @@ class StorecatPanaderiaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['require', 'unique:App\Models\catPanaderia,title', 'max:50'],
+            'title' => ['require', 'unique:App\Models\CatPanaderia,title', 'max:50'],
             'description' => ['require', 'max:255'],
             'image' => ['require', 'max:255'],
-            'price' => ['require', 'integer', 'min:1', 'max:99999'],
+            'price' => ['require', 'decimal:2', 'min:1', 'max:99999'],
             'available' => ['require', 'boolean'],
             'rating' => ['require', 'integer', 'min:1', 'max:5'],
             'discount' => 'nullable'

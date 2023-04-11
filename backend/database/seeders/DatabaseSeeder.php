@@ -12,13 +12,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call(FeaturedsSeeder::class);
-        $this->call(PromotionsSeeder::class);
-        $this->call(TestimonialsSeeder::class);
-        $this->call(CatDecoracionesSeeder::class);
-        $this->call(CatFlanesSeeder::class);
+        $this->call(FeaturedSeeder::class);
+        $this->call(PromotionSeeder::class);
+        $this->call(TestimonialSeeder::class);
+        $this->call(CatDecoracioneSeeder::class);
+        $this->call(CatFlaneSeeder::class);
         $this->call(CatPanaderiaSeeder::class);
-        $this->call(CatPastelesSeeder::class);
+        $this->call(CatPasteleSeeder::class);
         $this->call(CatReposteriaSeeder::class);
     }
 }

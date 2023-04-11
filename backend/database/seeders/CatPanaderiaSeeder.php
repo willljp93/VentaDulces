@@ -14,7 +14,7 @@ class CatPanaderiaSeeder extends Seeder
     public function run(): void
     {
         $faker = \Faker\Factory::create();
-        
+
         for ($i = 0; $i < 15; $i++) {
             DB::table('cat_panaderias')->insert([
                 'title' => $faker->word(),

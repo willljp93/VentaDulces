@@ -4,7 +4,7 @@
     {{ userStore.user.name }}
     <q-separator inset />
     AuthStore =>
-    {{ userStore.user }}
+    {{ userStore.user.email }}
     <q-separator inset />
   </q-page>
 </template>

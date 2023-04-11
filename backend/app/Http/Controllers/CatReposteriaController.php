@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\catReposteria;
-use App\Http\Requests\StorecatReposteriaRequest;
-use App\Http\Requests\UpdatecatReposteriaRequest;
+use App\Models\CatReposteria;
+use App\Http\Requests\StoreCatReposteriaRequest;
+use App\Http\Requests\UpdateCatReposteriaRequest;
 
 class CatReposteriaController extends Controller
 {
@@ -13,7 +13,7 @@ class CatReposteriaController extends Controller
      */
     public function index()
     {
-        $catReposterias = catReposteria::all();
+        $catReposterias = CatReposteria::all();
         $array = [];
         foreach ($catReposterias as $catReposteria) {
             $array[] = [
@@ -41,9 +41,9 @@ class CatReposteriaController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StorecatReposteriaRequest $request)
+    public function store(StoreCatReposteriaRequest $request)
     {
-        $catReposteria = new catReposteria;
+        $catReposteria = new CatReposteria;
         $catReposteria->title = $request->title;
         $catReposteria->description = $request->description;
         $catReposteria->image = $request->image;
@@ -62,7 +62,7 @@ class CatReposteriaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(catReposteria $catReposteria)
+    public function show(CatReposteria $catReposteria)
     {
         $data = [
             'message' => 'Detalles de Item',
@@ -74,7 +74,7 @@ class CatReposteriaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(catReposteria $catReposteria)
+    public function edit(CatReposteria $catReposteria)
     {
         //
     }
@@ -82,7 +82,7 @@ class CatReposteriaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatecatReposteriaRequest $request, catReposteria $catReposteria)
+    public function update(UpdateCatReposteriaRequest $request, CatReposteria $catReposteria)
     {
         $catReposteria->title = $request->title;
         $catReposteria->description = $request->description;
@@ -102,7 +102,7 @@ class CatReposteriaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(catReposteria $catReposteria)
+    public function destroy(CatReposteria $catReposteria)
     {
         $catReposteria->delete();
         $data = [

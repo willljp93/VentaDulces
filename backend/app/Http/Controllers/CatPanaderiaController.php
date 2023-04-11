@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\catPanaderia;
-use App\Http\Requests\StorecatPanaderiaRequest;
-use App\Http\Requests\UpdatecatPanaderiaRequest;
+use App\Models\CatPanaderia;
+use App\Http\Requests\StoreCatPanaderiaRequest;
+use App\Http\Requests\UpdateCatPanaderiaRequest;
 
 class CatPanaderiaController extends Controller
 {
@@ -41,7 +41,7 @@ class CatPanaderiaController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StorecatPanaderiaRequest $request)
+    public function store(StoreCatPanaderiaRequest $request)
     {
         $catPanaderia = new catPanaderia;
         $catPanaderia->title = $request->title;
@@ -62,7 +62,7 @@ class CatPanaderiaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(catPanaderia $catPanaderia)
+    public function show(CatPanaderia $catPanaderia)
     {
         $data = [
             'message' => 'Detalles de Item',
@@ -74,7 +74,7 @@ class CatPanaderiaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(catPanaderia $catPanaderia)
+    public function edit(CatPanaderia $catPanaderia)
     {
         //
     }
@@ -82,7 +82,7 @@ class CatPanaderiaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatecatPanaderiaRequest $request, catPanaderia $catPanaderia)
+    public function update(UpdateCatPanaderiaRequest $request, CatPanaderia $catPanaderia)
     {
         $catPanaderia->title = $request->title;
         $catPanaderia->description = $request->description;
@@ -102,7 +102,7 @@ class CatPanaderiaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(catPanaderia $catPanaderia)
+    public function destroy(CatPanaderia $catPanaderia)
     {
         $catPanaderia->delete();
         $data = [

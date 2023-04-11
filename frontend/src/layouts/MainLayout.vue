@@ -19,15 +19,29 @@
             padding="2px"
             icon-right="settings_applications"
             to="/admin/dashboard"
+            v-if="userStore.user"
           />
           <q-btn
             unelevated
             dense
             padding="5px"
-            label="Iniciar sesión  "
+            label="Iniciar sesión"
             to="login"
+            v-if="!userStore.user"
           >
-            <q-avatar size="42px">
+            <q-avatar size="42px" class="q-ml-xs">
+              <img fit="fill" src="~/assets/no_user_logo.png" />
+            </q-avatar>
+          </q-btn>
+          <q-btn
+            unelevated
+            dense
+            padding="5px"
+            :label="userStore.user?.email"
+            @click="logout()"
+            v-else
+          >
+            <q-avatar size="42px" class="q-ml-xs">
               <img fit="fill" src="~/assets/no_user_logo.png" />
             </q-avatar>
           </q-btn>
@@ -115,7 +129,23 @@
 import LeftDrawerMenu from "src/components/LeftDrawerMenu.vue";
 import RightDrawerMenu from "src/components/RightDrawerMenu.vue";
 import { ref } from "vue";
+import { useUserStore } from "src/stores/Auth";
+import { onMounted } from "vue";
+import axios from "axios";
 
+const userStore = useUserStore();
+onMounted(async () => {
+  await userStore.getUser();
+});
+
+const logout = async () => {
+  try {
+    await axios.post("http://localhost:8000/logout");
+    userStore.user = null;
+  } catch (error) {
+    console.error(error);
+  }
+};
 const leftDrawerOpen = ref(false);
 const rightDrawerOpen = ref(false);
 

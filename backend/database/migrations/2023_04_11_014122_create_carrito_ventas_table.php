@@ -13,7 +13,16 @@ return new class extends Migration
     {
         Schema::create('carrito_ventas', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
+            $table->string('description')->nullable();
+            $table->string('image')->nullable();
+            $table->decimal('price');
+            $table->integer('discount')->nullable();
+            $table->decimal('finalprice')->nullable();
+            $table->unsignedBigInteger('idusers')->nullable();
             $table->timestamps();
+
+            $table->foreign('idusers', 'fk_carritoventas_users_1')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

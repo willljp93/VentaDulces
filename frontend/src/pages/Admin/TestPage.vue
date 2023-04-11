@@ -1,10 +1,14 @@
 <template>
-  <q-page padding class="row q-gutter-lg q-pa-lg text-accent">
+  <q-page
+    padding
+    class="row q-gutter-lg q-pa-lg text-accent"
+    v-if="userStore.user"
+  >
     AuthUser =>
-    {{ userStore.user.name }}
+    {{ userStore.user?.name }}
     <q-separator inset />
     AuthStore =>
-    {{ userStore.user.email }}
+    {{ userStore.user?.email }}
     <q-separator inset />
   </q-page>
 </template>

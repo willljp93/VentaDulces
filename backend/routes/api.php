@@ -10,6 +10,7 @@ use App\Http\Controllers\CatFlaneController;
 use App\Http\Controllers\CatPanaderiaController;
 use App\Http\Controllers\CatPasteleController;
 use App\Http\Controllers\CatReposteriaController;
+use App\Http\Controllers\CarritoVentaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -73,3 +74,8 @@ Route::post('/catreposteria', [CatReposteriaController::class, 'store']);
 Route::get('/catreposteria/{catReposteria}', [CatReposteriaController::class, 'show']);
 Route::patch('/catreposteria/{catReposteria}', [CatReposteriaController::class, 'update']);
 Route::delete('/catreposteria/{catReposteria}', [CatReposteriaController::class, 'destroy']);
+//api CatPanaderiaController
+Route::get('/carrito', [CarritoVentaController::class, 'index']);
+Route::post('/carrito', [CarritoVentaController::class, 'store']);
+Route::post('/vaciarCarrito', [CarritoVentaController::class, 'vaciarCarrito']);
+Route::delete('/carrito/{carritoVenta}', [CarritoVentaController::class, 'destroy']);

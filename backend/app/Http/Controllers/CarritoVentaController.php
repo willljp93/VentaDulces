@@ -13,7 +13,21 @@ class CarritoVentaController extends Controller
      */
     public function index()
     {
-        //
+        $carritoVenta = CarritoVenta::all();
+        $array = [];
+        foreach ($carritoVenta as $carritoventa) {
+            $array[] = [
+                'id' => $carritoventa->id,
+                'idusers' => $carritoventa->idusers,
+                'title' => $carritoventa->title,
+                'description' => $carritoventa->description,
+                'image' => $carritoventa->image,
+                'price' => $carritoventa->price,
+                'discount' => $carritoventa->discount,
+                'finalprice' => $carritoventa->finalprice,
+            ];
+        }
+        return response()->json($array);
     }
 
     /**
@@ -29,7 +43,20 @@ class CarritoVentaController extends Controller
      */
     public function store(StoreCarritoVentaRequest $request)
     {
-        //
+        $carritoVenta = new CarritoVenta;
+        $carritoVenta->idusers = $request->idusers;
+        $carritoVenta->title = $request->title;
+        $carritoVenta->description = $request->description;
+        $carritoVenta->image = $request->image;
+        $carritoVenta->price = $request->price;
+        $carritoVenta->discount = $request->discount;
+        $carritoVenta->finalprice = $request->finalprice;
+        $carritoVenta->save();
+        $data = [
+            'menssage' => 'Item creado satifactoriamente',
+            'data' => $carritoVenta
+        ];
+        return response()->json($data);
     }
 
     /**
@@ -61,6 +88,19 @@ class CarritoVentaController extends Controller
      */
     public function destroy(CarritoVenta $carritoVenta)
     {
-        //
+        $carritoVenta->delete();
+        $data = [
+            'menssage' => 'Item eliminado correctamente',
+            'client' => $carritoVenta
+        ];
+        return response()->json($data);
     }
+
+    public function vaciarCarrito()
+    {
+        // $user = auth()->user();
+        // $user->carritoVenta()->delete();
+        return response()->json(['message' => 'Carrito vaciado con éxito']);
+    }
+
 }

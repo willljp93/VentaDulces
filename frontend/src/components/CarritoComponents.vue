@@ -7,7 +7,7 @@
       dense
       bordered
       title="Carrito de Compras"
-      :rows="rows"
+      :rows="carrito"
       :columns="columns"
       row-key="id"
       no-data-label="No encontre nada para ti"
@@ -18,16 +18,16 @@
           <q-btn
             class=""
             color="negative"
-            :disable="loading"
+            :disable="loading || carrito.length === 0"
             label="Vaciar"
-            @click="cleanCart"
+            @click="VaciarCarrito"
           />
           <q-btn
             class=""
             color="positive"
-            :disable="loading"
+            :disable="loading || carrito.length === 0"
             label="Comprar"
-            @click="buyCart"
+            @click="ComprarYa"
           />
         </div>
       </template>
@@ -45,7 +45,7 @@
             dense
             color="negative"
             icon="delete"
-            @click="deleteFeatured(props.row.id)"
+            @click="deletecarrito(props.row.id)"
           />
         </q-td>
       </template>
@@ -53,8 +53,14 @@
   </div>
 </template>
 
-<script>
-import { ref } from "vue";
+<script setup>
+import { api } from "src/boot/axios";
+import { useQuasar } from "quasar";
+import { ref, onMounted } from "vue";
+
+const $q = useQuasar();
+const carrito = ref([]);
+
 const loading = ref(false);
 
 const columns = [
@@ -70,64 +76,108 @@ const columns = [
   { name: "actions", label: "actions", field: "actions" },
 ];
 
-const rows = [
-  {
-    id: 1,
-    image: "https://via.placeholder.com/150",
-    title: "hola1",
-    price: 1,
-    description: "qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
-  },
-  {
-    id: 2,
-    image: "https://via.placeholder.com/150",
-    title: "hola2",
-    price: 2,
-    description: "qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
-  },
-  {
-    id: 3,
-    image: "https://via.placeholder.com/150",
-    title: "hola3",
-    price: 3,
-    description: "qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
-  },
-  {
-    id: 4,
-    image: "https://via.placeholder.com/150",
-    title: "hola4",
-    price: 4,
-    description: "qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
-  },
-  {
-    id: 5,
-    image: "https://via.placeholder.com/150",
-    title: "hola5",
-    price: 5,
-    description: "qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
-  },
-  {
-    id: 6,
-    image: "https://via.placeholder.com/150",
-    title: "hola6",
-    price: 6,
-    description: "qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
-  },
-  {
-    id: 7,
-    image: "Frozen Yogurt",
-    title: "hola",
-    price: 7,
-    description: "qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
-  },
-];
+onMounted(async () => {
+  await getCarrito();
+});
 
-export default {
-  setup() {
-    return {
-      columns,
-      rows,
-    };
-  },
+const getCarrito = async () => {
+  const { data } = await api.get("/api/carrito");
+  carrito.value = data;
 };
+
+const addCarrito = async (newcarrito) => {
+  try {
+    await api.post("/api/carrito", newcarrito);
+    $q.notify({
+      message: "Agregado con exito",
+      icon: "check",
+      color: "positive",
+    });
+    await getCarrito();
+    showDialogF.value = false;
+  } catch (error) {
+    $q.notify({
+      message: "Error al agregar",
+      icon: "times",
+      color: "negative",
+    });
+  }
+};
+
+const ComprarYa = async () => {
+  try {
+    loading.value = true;
+    // Agrega aquí la lógica para realizar la compra
+    await api.post('/api/comprar', carrito.value);
+    await VaciarCarrito();
+    $q.notify({
+      message: 'Compra realizada con éxito',
+      icon: 'check',
+      color: 'positive',
+    });
+  } catch (error) {
+    $q.notify({
+      message: 'Error al realizar la compra',
+      icon: 'times',
+      color: 'negative',
+    });
+  } finally {
+    loading.value = false;
+  }
+};
+
+const VaciarCarrito = async () => {
+  try {
+    $q.dialog({
+      html: true,
+      title: '<span class="text-red">Vaciar carrito</span>',
+      message: 'Estás seguro que deseas vaciar el carrito?',
+      cancel: { color: 'positive' },
+      ok: { color: 'negative' },
+      persistent: true,
+    }).onOk(async () => {
+      await api.delete('/api/vaciarCarrito');
+      await getCarrito();
+      $q.notify({
+        message: 'Carrito vaciado',
+        icon: 'check',
+        color: 'positive',
+      });
+    });
+  } catch (error) {
+    $q.notify({
+      message: 'Error al vaciar el carrito',
+      icon: 'times',
+      color: 'negative',
+    });
+  }
+};
+
+const deletecarrito = async (id) => {
+  try {
+    $q.dialog({
+      html: true,
+      title: '<span class="text-red">Eliminar</span>',
+      message: "Estas seguro que deseas eliminar el producto",
+      cancel: { color: "positive" },
+      ok: { color: "negative" },
+      persistent: true,
+    }).onOk(async () => {
+      await api.delete(`/api/carrito/${id}`);
+      $q.notify({
+        message: "Eliminado con exito",
+        icon: "check",
+        color: "positive",
+      });
+      await getCarrito();
+    });
+  } catch (error) {
+    $q.notify({
+      message: "Error al eliminar",
+      icon: "times",
+      color: "negative",
+    });
+  }
+};
+
 </script>

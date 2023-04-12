@@ -63,6 +63,7 @@
             color="primary"
             icon="shopping_bag"
             class="absolute"
+            :disable="!userStore.user"
             style="top: 0; right: 12px; transform: translateY(-50%)"
             @click="buyProduct(item.id)"
           />
@@ -107,7 +108,8 @@
             icon="shopping_cart"
             color="primary"
             label="Agregar al carrito"
-            @click="addToCart(item.id)"
+            :disable="!userStore.user"
+            @click="addToCart(item)"
           />
         </q-card-actions>
       </q-card>
@@ -131,14 +133,20 @@
 <script setup>
 import { api } from "src/boot/axios";
 import { ref, computed, onMounted } from "vue";
+import { useQuasar } from "quasar";
+import { useUserStore } from "src/stores/Auth";
+
+const $q = useQuasar();
+
+const userStore = useUserStore();
+onMounted(async () => {
+  await userStore.getUser();
+});
 
 const search = ref("");
 const stars = ref(0);
 const products = ref([]);
-const cart = ref({
-  items: [],
-  total: 0,
-});
+
 const hoveredCard = ref(null);
 const currentPage = ref(1);
 const perPage = ref(6);
@@ -161,9 +169,33 @@ const displayedItems = computed(() => {
   return filteredItems.value.slice(startIndex, endIndex);
 });
 
-const addToCart = (id) => {
-  console.log(id);
+
+const addToCart = async (item) => {
+  try {
+    const response = await api.post("/api/carrito", {
+      idusers: userStore.id,
+      title: item.title,
+      description: item.description,
+      image: item.image,
+      price: item.price,
+      discount: item.discount,
+      finalprice: item.finalprice
+    });
+    console.log(response.data);
+    $q.notify({
+      message: "Agregado con exito",
+      icon: "check",
+      color: "positive",
+    });
+  } catch (error) {
+    $q.notify({
+      message: "Error al agregar",
+      icon: "times",
+      color: "negative",
+    });
+  }
 };
+
 const buyProduct = (id) => {
   console.log(id);
 };

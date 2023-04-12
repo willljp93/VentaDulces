@@ -57,6 +57,12 @@
 import { api } from "src/boot/axios";
 import { useQuasar } from "quasar";
 import { ref, onMounted } from "vue";
+import { useUserStore } from "src/stores/Auth";
+
+const userStore = useUserStore();
+onMounted(async () => {
+  await userStore.getUser();
+});
 
 const $q = useQuasar();
 const carrito = ref([]);
@@ -81,28 +87,30 @@ onMounted(async () => {
 });
 
 const getCarrito = async () => {
-  const { data } = await api.get("/api/carrito");
+  const { data } = await api.get(`/api/carrito/${userStore.user.id}`);
   carrito.value = data;
 };
 
-const addCarrito = async (newcarrito) => {
-  try {
-    await api.post("/api/carrito", newcarrito);
-    $q.notify({
-      message: "Agregado con exito",
-      icon: "check",
-      color: "positive",
-    });
-    await getCarrito();
-    showDialogF.value = false;
-  } catch (error) {
-    $q.notify({
-      message: "Error al agregar",
-      icon: "times",
-      color: "negative",
-    });
-  }
-};
+
+// const addCarrito = async (newcarrito) => {
+//   try {
+//     await api.post("/api/carrito", newcarrito);
+//     $q.notify({
+//       message: "Agregado con exito",
+//       icon: "check",
+//       color: "positive",
+//     });
+//     await getCarrito();
+//     showDialogF.value = false;
+//   } catch (error) {
+//     $q.notify({
+//       message: "Error al agregar",
+//       icon: "times",
+//       color: "negative",
+//     });
+//   }
+// };
+
 
 const ComprarYa = async () => {
   try {

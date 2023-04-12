@@ -62,10 +62,12 @@ class CarritoVentaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(CarritoVenta $carritoVenta)
+    public function show(CarritoVenta $idusers)
     {
-        //
+        $carritoVenta = CarritoVenta::findOrFail($idusers);
+        return response()->json($carritoVenta);
     }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -96,11 +98,15 @@ class CarritoVentaController extends Controller
         return response()->json($data);
     }
 
-    public function vaciarCarrito()
+    public function vaciarCarrito(CarritoVenta $idusers)
     {
-        // $user = auth()->user();
-        // $user->carritoVenta()->delete();
-        return response()->json(['message' => 'Carrito vaciado con éxito']);
+        CarritoVenta::where('idusers', $idusers)->truncate();
+        return response()->json(['message' => 'Carrito vaciado con éxito'], 200);
     }
 
+    public function showiduser(CarritoVenta $idusers)
+    {
+        $registros = CarritoVenta::where('idusers', $idusers)->get();
+        return response()->json(['registros' => $registros], 200);
+    }
 }

@@ -62,11 +62,11 @@ class CatPasteleController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(CatPastele $catPastele)
+    public function show(CatPastele $catPasteles)
     {
         $data = [
             'message' => 'Detalles de Item',
-            'data' => $catPastele,
+            'data' => $catPasteles,
         ];
         return response()->json($data);
     }

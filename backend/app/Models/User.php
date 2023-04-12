@@ -43,6 +43,6 @@ class User extends Authenticatable
     ];
 
     public function carritoventas(){
-        return $this->hasMany('carritoventas::class');
+        return $this->hasMany('App\Models\CarritoVenta');
     }
 }

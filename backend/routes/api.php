@@ -65,7 +65,7 @@ Route::delete('/catpanaderia/{catPanaderia}', [CatPanaderiaController::class, 'd
 //api CatPanaderiaController
 Route::get('/catpasteles', [CatPasteleController::class, 'index']);
 Route::post('/catpasteles', [CatPasteleController::class, 'store']);
-Route::get('/catpasteles/{catPasteles}', [CatPasteleController::class, 'show']);
+Route::get('/catpasteles/{id}', [CatPasteleController::class, 'show']);
 Route::patch('/catpasteles/{catPasteles}', [CatPasteleController::class, 'update']);
 Route::delete('/catpasteles/{catPasteles}', [CatPasteleController::class, 'destroy']);
 //api CatPanaderiaController
@@ -74,8 +74,9 @@ Route::post('/catreposteria', [CatReposteriaController::class, 'store']);
 Route::get('/catreposteria/{catReposteria}', [CatReposteriaController::class, 'show']);
 Route::patch('/catreposteria/{catReposteria}', [CatReposteriaController::class, 'update']);
 Route::delete('/catreposteria/{catReposteria}', [CatReposteriaController::class, 'destroy']);
-//api CatPanaderiaController
+//api CarritoVentaController
 Route::get('/carrito', [CarritoVentaController::class, 'index']);
+Route::get('/carrito/{idusers}', [CarritoVentaController::class, 'showiduser']);
 Route::post('/carrito', [CarritoVentaController::class, 'store']);
-Route::post('/vaciarCarrito', [CarritoVentaController::class, 'vaciarCarrito']);
+Route::delete('/ccarrito/{idusers}', [CarritoVentaController::class, 'vaciarCarrito']);
 Route::delete('/carrito/{carritoVenta}', [CarritoVentaController::class, 'destroy']);

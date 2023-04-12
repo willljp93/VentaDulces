@@ -53,6 +53,7 @@
             padding="5px"
             label="Mi Carrito"
             icon-right="shopping_cart"
+            v-if="userStore.user"
             @click="toggleRightDrawer"
           >
             <q-badge style="margin-top: 0.4rem" color="red" transparent floating

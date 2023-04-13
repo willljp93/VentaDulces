@@ -29,6 +29,7 @@
             label="Comprar"
             @click="ComprarYa"
           />
+          <q-btn dense icon="update" color="info" @click="getCarrito" />
         </div>
       </template>
 
@@ -91,7 +92,6 @@ const getCarrito = async () => {
   carrito.value = data;
 };
 
-
 // const addCarrito = async (newcarrito) => {
 //   try {
 //     await api.post("/api/carrito", newcarrito);
@@ -111,23 +111,22 @@ const getCarrito = async () => {
 //   }
 // };
 
-
 const ComprarYa = async () => {
   try {
     loading.value = true;
     // Agrega aquí la lógica para realizar la compra
-    await api.post('/api/comprar', carrito.value);
+    await api.post("/api/comprar", carrito.value);
     await VaciarCarrito();
     $q.notify({
-      message: 'Compra realizada con éxito',
-      icon: 'check',
-      color: 'positive',
+      message: "Compra realizada con éxito",
+      icon: "check",
+      color: "positive",
     });
   } catch (error) {
     $q.notify({
-      message: 'Error al realizar la compra',
-      icon: 'times',
-      color: 'negative',
+      message: "Error al realizar la compra",
+      icon: "times",
+      color: "negative",
     });
   } finally {
     loading.value = false;
@@ -139,24 +138,24 @@ const VaciarCarrito = async () => {
     $q.dialog({
       html: true,
       title: '<span class="text-red">Vaciar carrito</span>',
-      message: 'Estás seguro que deseas vaciar el carrito?',
-      cancel: { color: 'positive' },
-      ok: { color: 'negative' },
+      message: "Estás seguro que deseas vaciar el carrito?",
+      cancel: { color: "positive" },
+      ok: { color: "negative" },
       persistent: true,
     }).onOk(async () => {
-      await api.delete('/api/vaciarCarrito');
+      await api.delete(`/api/ccarrito/${userStore.user.id}`);
       await getCarrito();
       $q.notify({
-        message: 'Carrito vaciado',
-        icon: 'check',
-        color: 'positive',
+        message: "Carrito vaciado",
+        icon: "check",
+        color: "positive",
       });
     });
   } catch (error) {
     $q.notify({
-      message: 'Error al vaciar el carrito',
-      icon: 'times',
-      color: 'negative',
+      message: "Error al vaciar el carrito",
+      icon: "times",
+      color: "negative",
     });
   }
 };
@@ -187,5 +186,4 @@ const deletecarrito = async (id) => {
     });
   }
 };
-
 </script>

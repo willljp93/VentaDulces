@@ -14,20 +14,9 @@ class CatPasteleController extends Controller
     public function index()
     {
         $catPasteles = CatPastele::all();
-        $array = [];
-        foreach ($catPasteles as $catPasteles) {
-            $array[] = [
-                'id' => $catPasteles->id,
-                'title' => $catPasteles->title,
-                'description' => $catPasteles->description,
-                'image' => $catPasteles->image,
-                'price' => $catPasteles->price,
-                'available' => $catPasteles->available,
-                'rating' => $catPasteles->rating,
-                'discount' => $catPasteles->discount,
-            ];
-        }
-        return response()->json($array);
+
+
+        return response()->json($catPasteles);
     }
 
     /**
@@ -43,20 +32,14 @@ class CatPasteleController extends Controller
      */
     public function store(StoreCatPasteleRequest $request)
     {
-        $catPasteles = new CatPastele;
-        $catPasteles->title = $request->title;
-        $catPasteles->description = $request->description;
-        $catPasteles->image = $request->image;
-        $catPasteles->price = $request->price;
-        $catPasteles->available = $request->available;
-        $catPasteles->rating = $request->rating;
-        $catPasteles->discount = $request->discount;
-        $catPasteles->save();
-        $data = [
-            'menssage' => 'Item creado satifactoriamente',
-            'data' => $catPasteles
-        ];
-        return response()->json($data);
+        $catPasteles =  CatPastele::create($request->all());
+
+        return response()->json(
+            [
+                'menssage' => 'Item creado satifactoriamente',
+                'data' => $catPasteles
+            ]
+        );
     }
 
     /**

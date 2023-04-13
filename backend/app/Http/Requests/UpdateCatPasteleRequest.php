@@ -22,13 +22,13 @@ class UpdateCatPasteleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['require', 'unique:App\Models\CatPastele,title', 'max:50'],
-            'description' => ['require', 'max:255'],
-            'image' => ['require', 'max:255'],
-            'price' => ['require', 'decimal:2', 'min:1', 'max:99999'],
-            'available' => ['require', 'boolean'],
-            'rating' => ['require', 'integer', 'min:1', 'max:5'],
-            'discount' => 'nullable'
+            // 'title' => ['require', 'unique:App\Models\CatPastele,title', 'max:50'],
+            // 'description' => ['require', 'max:255'],
+            // 'image' => ['require', 'max:255'],
+            // 'price' => ['require', 'decimal:2', 'min:1', 'max:99999'],
+            // 'available' => ['require', 'boolean'],
+            // 'rating' => ['require', 'integer', 'min:1', 'max:5'],
+            // 'discount' => 'nullable'
         ];
     }
 }

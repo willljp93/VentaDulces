@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\CarritoVenta;
 use App\Http\Requests\StoreCarritoVentaRequest;
 use App\Http\Requests\UpdateCarritoVentaRequest;
+use Illuminate\Http\Request;
 
 class CarritoVentaController extends Controller
 {
@@ -98,15 +99,18 @@ class CarritoVentaController extends Controller
         return response()->json($data);
     }
 
-    public function vaciarCarrito(CarritoVenta $idusers)
+    public function vaciarCarrito(Request $request)
     {
+        $idusers = $request->idusers;
         CarritoVenta::where('idusers', $idusers)->truncate();
         return response()->json(['message' => 'Carrito vaciado con éxito'], 200);
     }
 
-    public function showiduser(CarritoVenta $idusers)
+    public function showiduser(Request $request)
     {
-        $registros = CarritoVenta::where('idusers', $idusers)->get();
-        return response()->json(['registros' => $registros], 200);
+        $registros = CarritoVenta::where('idusers', $request->idusers)->get();
+        //return response()->json(['registros' => $registros], 200);
+
+        return $registros;
     }
 }

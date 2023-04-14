@@ -129,9 +129,9 @@
 <script setup>
 import LeftDrawerMenu from "src/components/LeftDrawerMenu.vue";
 import RightDrawerMenu from "src/components/RightDrawerMenu.vue";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useUserStore } from "src/stores/Auth";
-import { onMounted } from "vue";
+
 import axios from "axios";
 
 const userStore = useUserStore();

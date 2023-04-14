@@ -14,9 +14,8 @@ class CatDecoracioneController extends Controller
      */
     public function index()
     {
-        // $catdecoraciones = catDecoraciones::all();
-        // return response()->json($catdecoraciones);
-        return response()->json(CatDecoracione::paginate(6));
+        $catdecoraciones = CatDecoracione::all();
+        return response()->json($catdecoraciones);
     }
 
     /**
@@ -45,7 +44,7 @@ class CatDecoracioneController extends Controller
     public function show(CatDecoracione $catDecoracione)
     {
         $data = [
-            'message' => 'Detalles de Featureds',
+            'message' => 'Detalles de Item',
             'client' => $catDecoracione,
         ];
         return response()->json($data);
@@ -79,7 +78,7 @@ class CatDecoracioneController extends Controller
     {
         $catDecoracione->delete();
         $data = [
-            'menssage' => 'Featured eliminado correctamente',
+            'menssage' => 'Item eliminado correctamente',
             'client' => $catDecoracione
         ];
         return response()->json($data);

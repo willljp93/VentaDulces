@@ -4,8 +4,8 @@
       hide-header
       hide-bottom
       flat
-      dense
       bordered
+      dense
       title="Carrito de Compras"
       :rows="carrito"
       :columns="columns"
@@ -35,7 +35,9 @@
 
       <template v-slot:body-cell-image="props">
         <q-td :props="props">
-          <q-img :src="props.row.image" />
+          <q-avatar>
+            <img fit="cover" :ratio="1" :src="props.row.image" />
+          </q-avatar>
         </q-td>
       </template>
       <template v-slot:body-cell-actions="props">
@@ -88,28 +90,9 @@ onMounted(async () => {
 });
 
 const getCarrito = async () => {
-  const { data } = await api.get(`/api/carrito/${userStore.user.id}`);
+  const { data } = await api.get(`/api/carrito/${userStore.user?.id}`);
   carrito.value = data;
 };
-
-// const addCarrito = async (newcarrito) => {
-//   try {
-//     await api.post("/api/carrito", newcarrito);
-//     $q.notify({
-//       message: "Agregado con exito",
-//       icon: "check",
-//       color: "positive",
-//     });
-//     await getCarrito();
-//     showDialogF.value = false;
-//   } catch (error) {
-//     $q.notify({
-//       message: "Error al agregar",
-//       icon: "times",
-//       color: "negative",
-//     });
-//   }
-// };
 
 const ComprarYa = async () => {
   try {
@@ -143,7 +126,7 @@ const VaciarCarrito = async () => {
       ok: { color: "negative" },
       persistent: true,
     }).onOk(async () => {
-      await api.delete(`/api/ccarrito/${userStore.user.id}`);
+      await api.delete(`/api/ccarrito/${userStore.user?.id}`);
       await getCarrito();
       $q.notify({
         message: "Carrito vaciado",

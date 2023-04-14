@@ -169,19 +169,17 @@ const displayedItems = computed(() => {
   return filteredItems.value.slice(startIndex, endIndex);
 });
 
-
 const addToCart = async (item) => {
   try {
-    const response = await api.post("/api/carrito", {
-      idusers: userStore.id,
+    await api.post("/api/carrito", {
+      idusers: userStore.user?.id,
       title: item.title,
       description: item.description,
       image: item.image,
       price: item.price,
       discount: item.discount,
-      finalprice: item.finalprice
+      finalprice: item.finalprice,
     });
-    console.log(response.data);
     $q.notify({
       message: "Agregado con exito",
       icon: "check",
@@ -208,7 +206,6 @@ const getPasteles = async () => {
   const { data } = await api.get("/api/catpasteles");
   products.value = data;
 };
-
 </script>
 <style scoped lang="scss">
 .my-card {

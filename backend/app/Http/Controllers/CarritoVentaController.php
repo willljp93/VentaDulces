@@ -101,8 +101,8 @@ class CarritoVentaController extends Controller
 
     public function vaciarCarrito(Request $request)
     {
-        $idusers = $request->idusers;
-        CarritoVenta::where('idusers', $idusers)->truncate();
+        $userid = $request->idusers;
+        CarritoVenta::where('idusers', $userid)->delete();
         return response()->json(['message' => 'Carrito vaciado con éxito'], 200);
     }
 

@@ -17,7 +17,7 @@ php artisan server
 -----------------------------------------------
 
 # Quasar Framework 2 Frontend
-cd
+cd .\frontend\
   # Instalar dependencias
 pnpm install
   # correr quasar framework

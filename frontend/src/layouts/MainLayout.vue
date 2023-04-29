@@ -37,7 +37,7 @@
             unelevated
             dense
             padding="5px"
-            :label="userStore.user?.email"
+            :label="user?.email"
             @click="logout()"
             v-else
           >
@@ -57,7 +57,7 @@
             @click="toggleRightDrawer"
           >
             <q-badge style="margin-top: 0.4rem" color="red" transparent floating
-              >0</q-badge
+              >{{ cantidadDulces }}</q-badge
             >
           </q-btn>
         </div>
@@ -132,16 +132,21 @@ import RightDrawerMenu from "src/components/RightDrawerMenu.vue";
 import { ref, onMounted } from "vue";
 import { useUserStore } from "src/stores/Auth";
 
-import axios from "axios";
+import { storeToRefs } from "pinia";
+import { api } from "src/boot/axios";
+import { useGetCarritoStore } from "src/stores/runGetCarrito";
 
 const userStore = useUserStore();
+const { getUser } = useUserStore();
+const { cantidadDulces} = storeToRefs(useGetCarritoStore())
+const { user } = storeToRefs(useUserStore());
 onMounted(async () => {
-  await userStore.getUser();
+  await getUser();
 });
 
 const logout = async () => {
   try {
-    await axios.post("http://localhost:8000/logout");
+    await api.post("/logout");
     userStore.user = null;
   } catch (error) {
     console.error(error);

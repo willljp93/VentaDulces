@@ -63,7 +63,7 @@
             color="primary"
             icon="shopping_bag"
             class="absolute"
-            :disable="!userStore.user"
+            :disable="!user"
             style="top: 0; right: 12px; transform: translateY(-50%)"
             @click="buyProduct(item.id)"
           />
@@ -108,11 +108,12 @@
             icon="shopping_cart"
             color="primary"
             label="Agregar al carrito"
-            :disable="!userStore.user"
+            :disable="user===null"
             @click="addToCart(item)"
           />
         </q-card-actions>
       </q-card>
+      {{ dulces }}
     </div>
     <!-- paginacion -->
     <div class="col-4 q-pa-lg flex flex-center">
@@ -135,12 +136,20 @@ import { api } from "src/boot/axios";
 import { ref, computed, onMounted } from "vue";
 import { useQuasar } from "quasar";
 import { useUserStore } from "src/stores/Auth";
+import { useGetCarritoStore } from "src/stores/runGetCarrito";
+import { storeToRefs } from "pinia";
 
 const $q = useQuasar();
 
-const userStore = useUserStore();
+const { getUser } = useUserStore();
+const { getDulces, addDulces, getCarritosByID } = useGetCarritoStore();
+const { user } = storeToRefs(useUserStore());
+const { dulces } = storeToRefs(useGetCarritoStore());
 onMounted(async () => {
-  await userStore.getUser();
+  await getUser();
+  await getDulces();
+  await getFlanes();
+  await getCarritosByID(user.value.id)
 });
 
 const search = ref("");
@@ -170,15 +179,17 @@ const displayedItems = computed(() => {
 
 const addToCart = async (item) => {
   try {
-    await api.post("/api/carrito", {
-      idusers: userStore.user?.id,
+    const dto = {
+      idusers: user.value?.id,
       title: item.title,
       description: item.description,
       image: item.image,
       price: item.price,
       discount: item.discount,
       finalprice: item.finalprice,
-    });
+    };
+    await addDulces(dto);
+    await getCarritosByID(user.value.id)
     $q.notify({
       message: "Agregado con exito",
       icon: "check",
@@ -197,9 +208,6 @@ const buyProduct = (id) => {
   console.log(id);
 };
 
-onMounted(async () => {
-  await getFlanes();
-});
 
 const getFlanes = async () => {
   const { data } = await api.get("/api/catflanes");

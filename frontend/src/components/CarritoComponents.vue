@@ -29,7 +29,7 @@
             label="Comprar"
             @click="ComprarYa"
           />
-          <q-btn dense icon="update" color="info" @click="getCarrito" />
+          <q-btn dense icon="update" color="info" @click="actualizarCarrito" />
         </div>
       </template>
 
@@ -58,17 +58,26 @@
 
 <script setup>
 import { api } from "src/boot/axios";
-import { useQuasar } from "quasar";
 import { ref, onMounted } from "vue";
+import { useQuasar } from "quasar";
+import { storeToRefs } from "pinia";
 import { useUserStore } from "src/stores/Auth";
+import { useGetCarritoStore } from "src/stores/runGetCarrito";
 
-const userStore = useUserStore();
+const { getUser } = useUserStore();
+const { getDulces, getCarritosByID } = useGetCarritoStore();
+const { dulces, carrito } = storeToRefs(useGetCarritoStore());
+const { user } = storeToRefs(useUserStore())
 onMounted(async () => {
-  await userStore.getUser();
+  await getUser();
+  // await getCarrito();
+  await getDulces();
+  await getCarritosByID(user.value.id)
+
 });
 
 const $q = useQuasar();
-const carrito = ref([]);
+// const carrito = ref([]);
 
 const loading = ref(false);
 
@@ -85,14 +94,14 @@ const columns = [
   { name: "actions", label: "actions", field: "actions" },
 ];
 
-onMounted(async () => {
-  await getCarrito();
-});
+// const getCarrito = async () => {
+//   const { data } = await api.get(`/api/carrito/${ user?.id}`);
+//   carrito.value = data;
+// };
+const actualizarCarrito = async()=>{
+  await getCarritosByID(user.value.id)
 
-const getCarrito = async () => {
-  const { data } = await api.get(`/api/carrito/${userStore.user?.id}`);
-  carrito.value = data;
-};
+}
 
 const ComprarYa = async () => {
   try {
@@ -126,8 +135,8 @@ const VaciarCarrito = async () => {
       ok: { color: "negative" },
       persistent: true,
     }).onOk(async () => {
-      await api.delete(`/api/ccarrito/${userStore.user?.id}`);
-      await getCarrito();
+      await api.delete(`/api/ccarrito/${user.value?.id}`);
+      await getCarritosByID(user.value.id)
       $q.notify({
         message: "Carrito vaciado",
         icon: "check",
@@ -159,7 +168,7 @@ const deletecarrito = async (id) => {
         icon: "check",
         color: "positive",
       });
-      await getCarrito();
+      await getCarritosByID(user.value.id)
     });
   } catch (error) {
     $q.notify({

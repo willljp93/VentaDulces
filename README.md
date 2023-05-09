@@ -12,13 +12,14 @@ php artisan key:generate
   # ejecutar migracion y seeder
 php artisan migrate:fresh --seed
   # correr Laravel API
-php artisan server
+php artisan serve
 
 -----------------------------------------------
 
 # Quasar Framework 2 Frontend
 cd .\frontend\
   # Instalar dependencias
+pnpm add -g @quasar/cli
 pnpm install
   # correr quasar framework
 quasar dev

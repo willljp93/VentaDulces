@@ -1,7 +1,5 @@
 <template>
   <q-page class="q-pa-sm">
-    <card-social icon_position="right" />
-
     <q-card class="q-mt-sm no-shadow" bordered>
       <q-card-section class="text-h6 q-pb-none">
         <q-item>
@@ -106,24 +104,6 @@
               </q-item>
             </div>
           </div>
-          <div></div>
-        </div>
-        <div class="col-lg-3 col-sm-12 col-xs-12 col-md-3 text-center">
-          <q-item>
-            <q-item-section avatar class="">
-              <q-icon
-                color="blue"
-                name="las la-gift"
-                class="q-pl-md"
-                size="32px"
-              />
-            </q-item-section>
-
-            <q-item-section>
-              <div class="text-h6">VENTAS DE HOY</div>
-            </q-item-section>
-          </q-item>
-          <div></div>
         </div>
       </q-card-section>
       <!-- ------------------------- -->
@@ -705,11 +685,7 @@ const sales_column = [
 
 export default defineComponent({
   name: "DashboardPage",
-  components: {
-    CardSocial: defineAsyncComponent(() =>
-      import("components/cards/CardSocial.vue")
-    ),
-  },
+  components: {},
   setup() {
     return {
       slide: ref(1),

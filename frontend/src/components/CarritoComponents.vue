@@ -1,35 +1,48 @@
 <template>
   <div class="q-pa-none q-ma-none">
+    <!-- hide-bottom -->
     <q-table
       hide-header
-      hide-bottom
       flat
       bordered
       dense
+      wrap-cells
+      table-colspan
+      rows-per-page-options="0"
       title="Carrito de Compras"
       :rows="carrito"
       :columns="columns"
       row-key="id"
+      class="my-sticky-header-table"
       no-data-label="No encontre nada para ti"
     >
       <template v-slot:top>
-        <p class="q-pa-xs col-12">Carrito de Compras</p>
-        <div class="q-gutter-xs flex-center">
-          <q-btn
-            class=""
-            color="negative"
-            :disable="loading || carrito.length === 0"
-            label="Vaciar"
-            @click="VaciarCarrito"
-          />
-          <q-btn
-            class=""
-            color="positive"
-            :disable="loading || carrito.length === 0"
-            label="Comprar"
-            @click="ComprarYa"
-          />
-          <q-btn dense icon="update" color="info" @click="actualizarCarrito" />
+        <div class="justify-center row">
+          <p class="q-pa-xs col-12 text-center carrito-titulo">
+            Carrito de Compras
+          </p>
+          <div class="q-gutter-xs">
+            <q-btn
+              dense
+              color="negative"
+              :disable="loading || carrito.length === 0"
+              label="Vaciar"
+              @click="VaciarCarrito"
+            />
+            <q-btn
+              dense
+              color="positive"
+              :disable="loading || carrito.length === 0"
+              label="Comprar"
+              @click="ComprarYa"
+            />
+            <q-btn
+              dense
+              icon="update"
+              color="info"
+              @click="actualizarCarrito"
+            />
+          </div>
         </div>
       </template>
 
@@ -62,25 +75,19 @@ import { ref, onMounted } from "vue";
 import { useQuasar } from "quasar";
 import { storeToRefs } from "pinia";
 import { useUserStore } from "src/stores/Auth";
-import { useGetCarritoStore } from "src/stores/runGetCarrito";
+import { useProductStore } from "src/stores/ProductStore";
 
 const { getUser } = useUserStore();
-const { getDulces, getCarritosByID } = useGetCarritoStore();
-const { dulces, carrito } = storeToRefs(useGetCarritoStore());
-const { user } = storeToRefs(useUserStore())
+const { getCartByID } = useProductStore();
+const { carrito } = storeToRefs(useProductStore());
+const { user } = storeToRefs(useUserStore());
 onMounted(async () => {
   await getUser();
-  // await getCarrito();
-  await getDulces();
-  await getCarritosByID(user.value.id)
-
+  await getCartByID(user.value.id);
 });
 
 const $q = useQuasar();
-// const carrito = ref([]);
-
 const loading = ref(false);
-
 const columns = [
   { name: "image", align: "center", label: "image", field: "image" },
   {
@@ -94,14 +101,9 @@ const columns = [
   { name: "actions", label: "actions", field: "actions" },
 ];
 
-// const getCarrito = async () => {
-//   const { data } = await api.get(`/api/carrito/${ user?.id}`);
-//   carrito.value = data;
-// };
-const actualizarCarrito = async()=>{
-  await getCarritosByID(user.value.id)
-
-}
+const actualizarCarrito = async () => {
+  await getCartByID(user.value.id);
+};
 
 const ComprarYa = async () => {
   try {
@@ -136,7 +138,7 @@ const VaciarCarrito = async () => {
       persistent: true,
     }).onOk(async () => {
       await api.delete(`/api/ccarrito/${user.value?.id}`);
-      await getCarritosByID(user.value.id)
+      await getCartByID(user.value.id);
       $q.notify({
         message: "Carrito vaciado",
         icon: "check",
@@ -168,7 +170,7 @@ const deletecarrito = async (id) => {
         icon: "check",
         color: "positive",
       });
-      await getCarritosByID(user.value.id)
+      await getCartByID(user.value.id);
     });
   } catch (error) {
     $q.notify({
@@ -179,3 +181,44 @@ const deletecarrito = async (id) => {
   }
 };
 </script>
+<style lang="scss">
+.carrito-titulo {
+  font-size: 20px;
+  color: #333;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(255, 255, 255, 1);
+}
+
+.my-sticky-header-table {
+  /* height or max-height is important */
+  height: 560px;
+
+  .q-table__top,
+  .q-table__bottom,
+  thead tr:first-child th {
+    /* bg color is important for th; just specify one */
+    background-color: #26a69a;
+  }
+
+  thead tr th {
+    position: sticky;
+    z-index: 1;
+  }
+
+  thead tr:first-child th {
+    top: 0;
+  }
+
+  /* this is when the loading indicator appears */
+  &.q-table--loading thead tr:last-child th {
+    /* height of all previous header rows */
+    top: 48px;
+  }
+
+  /* prevent scrolling behind sticky top row on focus */
+  tbody {
+    /* height of all previous header rows */
+    scroll-margin-top: 48px;
+  }
+}
+</style>

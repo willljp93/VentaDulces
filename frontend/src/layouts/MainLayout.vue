@@ -33,18 +33,57 @@
               <img fit="fill" src="~/assets/no_user_logo.png" />
             </q-avatar>
           </q-btn>
-          <q-btn
-            unelevated
+          <q-btn-dropdown
+            v-else
             dense
+            stretch
+            unelevated
             padding="5px"
             :label="user?.email"
-            @click="logout()"
-            v-else
           >
-            <q-avatar size="42px" class="q-ml-xs">
-              <img fit="fill" src="~/assets/no_user_logo.png" />
-            </q-avatar>
-          </q-btn>
+            <div class="row no-wrap q-pa-md">
+              <div class="column">
+                <div class="text-h6 q-mb-md">Ajustes</div>
+
+                <q-list>
+                  <q-item clickable v-ripple>
+                    <q-item-section avatar>
+                      <q-icon color="primary" name="account_circle" />
+                    </q-item-section>
+                    <q-item-section>Cambiar Foto de Perfil</q-item-section>
+                  </q-item>
+
+                  <q-item clickable v-ripple>
+                    <q-item-section avatar>
+                      <q-icon color="primary" name="password" />
+                    </q-item-section>
+                    <q-item-section>Cambiar Contraseña</q-item-section>
+                  </q-item>
+                </q-list>
+              </div>
+
+              <q-separator vertical inset class="q-mx-lg" />
+
+              <div class="column items-center">
+                <q-avatar size="72px">
+                  <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
+                </q-avatar>
+
+                <div class="text-subtitle1 q-mt-md q-mb-xs">
+                  {{ user?.name }}
+                </div>
+
+                <q-btn
+                  color="primary"
+                  label="Salir"
+                  push
+                  size="sm"
+                  @click="logout()"
+                  v-close-popup
+                />
+              </div>
+            </div>
+          </q-btn-dropdown>
 
           <q-btn
             dense
@@ -53,12 +92,16 @@
             padding="5px"
             label="Mi Carrito"
             icon-right="shopping_cart"
-            v-if="userStore.user"
+            v-if="userStore?.user"
             @click="toggleRightDrawer"
           >
-            <q-badge style="margin-top: 0.4rem" color="red" transparent floating
-              >{{ cantidadDulces }}</q-badge
-            >
+            <q-badge
+            style="margin-top: -0.1rem"
+              floating
+              transparent
+              color="red"
+              >{{ carritoCantidad }}</q-badge
+              >
           </q-btn>
         </div>
       </q-toolbar>
@@ -131,14 +174,13 @@ import LeftDrawerMenu from "src/components/LeftDrawerMenu.vue";
 import RightDrawerMenu from "src/components/RightDrawerMenu.vue";
 import { ref, onMounted } from "vue";
 import { useUserStore } from "src/stores/Auth";
-
 import { storeToRefs } from "pinia";
 import { api } from "src/boot/axios";
-import { useGetCarritoStore } from "src/stores/runGetCarrito";
+import { useProductStore } from "src/stores/ProductStore";
 
 const userStore = useUserStore();
 const { getUser } = useUserStore();
-const { cantidadDulces} = storeToRefs(useGetCarritoStore())
+const { carritoCantidad } = storeToRefs(useProductStore());
 const { user } = storeToRefs(useUserStore());
 onMounted(async () => {
   await getUser();

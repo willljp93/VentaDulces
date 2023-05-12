@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-md">
     <q-table
-      class="my-sticky-header-table"
+      class="mytable"
       :rows="featureds"
       :columns="columnsfeatureds"
       :filter="filter"
@@ -367,39 +367,25 @@ const deleteFeatured = async (id) => {
   }
 };
 </script>
-<style lang="sass">
-.my-sticky-header-table
+<style lang="scss">
+.mytable {
   .q-table__top,
   .q-table__bottom,
-  thead tr:first-child th
-    background-color: #26a69a
-
-  thead tr th
-    position: sticky
-    z-index: 1
-  thead tr:first-child th
-    top: 0
-
-  &.q-table--loading thead tr:last-child th
-    top: 48px
-
-  tbody
-    scroll-margin-top: 48px
-.dialog-custom-class
-  .dialog-details
-    img.dialog-image
-      max-width: 300px
-      max-height: 300px
-
-.cartel
-  width: 100%
-  max-width: 150px
-  transition: box-shadow 0.2s ease-in-out
-  box-shadow: 0px 0px 10px 5px #00000033
-
-.featuredcard
-  width: 100%
-  max-width: 300px
-  box-shadow: 0px 0px 10px 5px #00000033
-  transition: box-shadow 0.5s ease-in-out
+  thead tr:first-child th {
+    background-color: #9c27b0;
+  }
+  thead tr th {
+    position: sticky;
+    z-index: 1;
+    &.q-table--loading thead tr:last-child th {
+      top: 48px;
+    }
+  }
+  &.q-table--loading thead tr:last-child th {
+    top: 48px;
+  }
+  tbody {
+    scroll-margin-top: 48px;
+  }
+}
 </style>

@@ -1,7 +1,7 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
-      <q-toolbar>
+      <q-toolbar class="bg-secondary">
         <q-btn
           flat
           dense
@@ -45,11 +45,57 @@
             </q-menu>
           </q-btn>
           <!-- Botón login usuario -->
-          <q-btn round flat>
-            <q-avatar size="26px">
-              <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
-            </q-avatar>
-          </q-btn>
+          <q-btn-dropdown
+            dense
+            stretch
+            unelevated
+            padding="5px"
+            :label="user?.email"
+          >
+            <div class="row no-wrap q-pa-md">
+              <div class="column">
+                <div class="text-h6 q-mb-md">Ajustes</div>
+
+                <q-list>
+                  <q-item clickable v-ripple>
+                    <q-item-section avatar>
+                      <q-icon color="primary" name="account_circle" />
+                    </q-item-section>
+                    <q-item-section>Cambiar Foto de Perfil</q-item-section>
+                  </q-item>
+
+                  <q-item clickable v-ripple>
+                    <q-item-section avatar>
+                      <q-icon color="primary" name="password" />
+                    </q-item-section>
+                    <q-item-section>Cambiar Contraseña</q-item-section>
+                  </q-item>
+                </q-list>
+              </div>
+
+              <q-separator vertical inset class="q-mx-lg" />
+
+              <div class="column items-center">
+                <q-avatar size="72px">
+                  <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
+                </q-avatar>
+
+                <div class="text-subtitle1 q-mt-md q-mb-xs">
+                  {{ user?.name }}
+                </div>
+
+                <q-btn
+                  color="primary"
+                  label="Salir"
+                  push
+                  size="sm"
+                  @click="logout()"
+                  v-close-popup
+                  to="/"
+                />
+              </div>
+            </div>
+          </q-btn-dropdown>
         </div>
       </q-toolbar>
     </q-header>
@@ -59,7 +105,7 @@
       v-model="leftDrawerOpen"
       show-if-above
       bordered
-      class="bg-primary text-white"
+      class="bg-secondary text-white"
     >
       <q-list>
         <!-- ========== -->
@@ -223,28 +269,36 @@
   </q-layout>
 </template>
 
-<script>
+<script setup>
 import Messages from "./MessagesPage.vue";
 import { defineComponent, ref } from "vue";
 import { useQuasar } from "quasar";
-export default defineComponent({
-  name: "MainLayout",
-  components: {
-    Messages,
-  },
-  setup() {
-    const leftDrawerOpen = ref(false);
-    const $q = useQuasar();
+import { onMounted } from "vue";
+import { useUserStore } from "src/stores/Auth";
+import { storeToRefs } from "pinia";
+import { api } from "src/boot/axios";
 
-    return {
-      $q,
-      leftDrawerOpen,
-      toggleLeftDrawer() {
-        leftDrawerOpen.value = !leftDrawerOpen.value;
-      },
-    };
-  },
+const userStore = useUserStore();
+const { getUser } = useUserStore();
+const { user } = storeToRefs(useUserStore());
+onMounted(async () => {
+  await getUser();
 });
+
+const logout = async () => {
+  try {
+    await api.post("/logout");
+    userStore.user = null;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const leftDrawerOpen = ref(false);
+function toggleLeftDrawer() {
+  leftDrawerOpen.value = !leftDrawerOpen.value;
+}
+const $q = useQuasar();
 </script>
 
 <style>

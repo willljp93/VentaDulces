@@ -2,7 +2,7 @@
   <!-- Promociones -->
   <div class="q-pa-md">
     <q-table
-      class="my-sticky-header-table"
+      class="mytable3"
       :rows="testimonials"
       :columns="columnstestimonials"
       :filter="filter"
@@ -314,38 +314,25 @@ const deleteTestimonial = async (id) => {
   }
 };
 </script>
-<style lang="sass">
-.my-sticky-header-table
+<style lang="scss">
+.mytable3 {
   .q-table__top,
   .q-table__bottom,
-  thead tr:first-child th
-    background-color: #26a69a
-
-  thead tr th
-    position: sticky
-    z-index: 1
-  thead tr:first-child th
-    top: 0
-
-  &.q-table--loading thead tr:last-child th
-    top: 48px
-
-  tbody
-    scroll-margin-top: 48px
-
-.dialog
-  width: 100%
-  max-width: 450px
-  transition: box-shadow 0.2s ease-in-out
-  box-shadow: 0px 0px 10px 5px #00000033
-
-.testimonial-card
-  width: 100%
-  max-width: 350px
-  box-shadow: 0px 0px 10px 5px #00000033
-  transition: box-shadow 0.5s ease-in-out
-
-.testimonial-rating
-  margin-right: 5px
-  transform: translateY(5px)
+  thead tr:first-child th {
+    background-color: #009688;
+  }
+  thead tr th {
+    position: sticky;
+    z-index: 1;
+    &.q-table--loading thead tr:last-child th {
+      top: 48px;
+    }
+  }
+  &.q-table--loading thead tr:last-child th {
+    top: 48px;
+  }
+  tbody {
+    scroll-margin-top: 48px;
+  }
+}
 </style>

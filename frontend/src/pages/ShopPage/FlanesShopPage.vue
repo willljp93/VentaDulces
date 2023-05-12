@@ -63,7 +63,7 @@
             color="primary"
             icon="shopping_bag"
             class="absolute"
-            :disable="!user"
+            :disable="user === null"
             style="top: 0; right: 12px; transform: translateY(-50%)"
             @click="buyProduct(item.id)"
           />
@@ -108,12 +108,11 @@
             icon="shopping_cart"
             color="primary"
             label="Agregar al carrito"
-            :disable="user===null"
+            :disable="user === null"
             @click="addToCart(item)"
           />
         </q-card-actions>
       </q-card>
-      {{ dulces }}
     </div>
     <!-- paginacion -->
     <div class="col-4 q-pa-lg flex flex-center">
@@ -132,49 +131,46 @@
 </template>
 
 <script setup>
-import { api } from "src/boot/axios";
 import { ref, computed, onMounted } from "vue";
 import { useQuasar } from "quasar";
 import { useUserStore } from "src/stores/Auth";
-import { useGetCarritoStore } from "src/stores/runGetCarrito";
+import { useProductStore } from "src/stores/ProductStore";
 import { storeToRefs } from "pinia";
 
 const $q = useQuasar();
 
 const { getUser } = useUserStore();
-const { getDulces, addDulces, getCarritosByID } = useGetCarritoStore();
+const { putToCart, getCartByID, getFlanes } = useProductStore();
 const { user } = storeToRefs(useUserStore());
-const { dulces } = storeToRefs(useGetCarritoStore());
+const { flanes } = storeToRefs(useProductStore());
+
 onMounted(async () => {
   await getUser();
-  await getDulces();
+  await getCartByID(user.value.id);
   await getFlanes();
-  await getCarritosByID(user.value.id)
 });
 
 const search = ref("");
 const stars = ref(0);
-const products = ref([]);
 const hoveredCard = ref(null);
 const currentPage = ref(1);
 const perPage = ref(6);
 const maxPrice = ref(Infinity);
 
 const filteredItems = computed(() => {
-  return products.value.filter(
+  return flanes.value.filter(
     (item) =>
       item.title.toLowerCase().includes(search.value.toLowerCase()) &&
       item.price <= maxPrice.value
   );
 });
-const totalPages = computed(() => {
-  return Math.ceil(filteredItems.value.length / perPage.value);
-});
-
 const displayedItems = computed(() => {
   const startIndex = (currentPage.value - 1) * perPage.value;
   const endIndex = startIndex + perPage.value;
   return filteredItems.value.slice(startIndex, endIndex);
+});
+const totalPages = computed(() => {
+  return Math.ceil(filteredItems.value.length / perPage.value);
 });
 
 const addToCart = async (item) => {
@@ -188,8 +184,8 @@ const addToCart = async (item) => {
       discount: item.discount,
       finalprice: item.finalprice,
     };
-    await addDulces(dto);
-    await getCarritosByID(user.value.id)
+    await putToCart(dto);
+    await getCartByID(user.value.id);
     $q.notify({
       message: "Agregado con exito",
       icon: "check",
@@ -206,12 +202,6 @@ const addToCart = async (item) => {
 
 const buyProduct = (id) => {
   console.log(id);
-};
-
-
-const getFlanes = async () => {
-  const { data } = await api.get("/api/catflanes");
-  products.value = data;
 };
 </script>
 <style scoped lang="scss">

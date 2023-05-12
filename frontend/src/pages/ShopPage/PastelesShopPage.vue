@@ -63,7 +63,7 @@
             color="primary"
             icon="shopping_bag"
             class="absolute"
-            :disable="!userStore.user"
+            :disable="!userauth"
             style="top: 0; right: 12px; transform: translateY(-50%)"
             @click="buyProduct(item.id)"
           />
@@ -108,7 +108,7 @@
             icon="shopping_cart"
             color="primary"
             label="Agregar al carrito"
-            :disable="!userStore.user"
+            :disable="!userauth"
             @click="addToCart(item)"
           />
         </q-card-actions>
@@ -131,55 +131,68 @@
 </template>
 
 <script setup>
-import { api } from "src/boot/axios";
 import { ref, computed, onMounted } from "vue";
 import { useQuasar } from "quasar";
 import { useUserStore } from "src/stores/Auth";
+import { useProductStore } from "src/stores/ProductStore";
+import { storeToRefs } from "pinia";
 
 const $q = useQuasar();
 
-const userStore = useUserStore();
+const { getUser } = useUserStore();
+const { putToCart, getCartByID, getPasteles } = useProductStore();
+const { user, userauth } = storeToRefs(useUserStore());
+const { pasteles } = storeToRefs(useProductStore());
+
 onMounted(async () => {
-  await userStore.getUser();
+  try {
+    await getUser();
+  } catch (error) {
+    console.log("Error aqui > ", error);
+  }
+  if (userauth === true) {
+  } else {
+    await getCartByID(user.value?.id);
+  }
+  await getPasteles();
 });
 
 const search = ref("");
 const stars = ref(0);
-const products = ref([]);
-
 const hoveredCard = ref(null);
 const currentPage = ref(1);
 const perPage = ref(6);
 const maxPrice = ref(Infinity);
 
 const filteredItems = computed(() => {
-  return products.value.filter(
+  return pasteles.value.filter(
     (item) =>
       item.title.toLowerCase().includes(search.value.toLowerCase()) &&
       item.price <= maxPrice.value
   );
 });
-const totalPages = computed(() => {
-  return Math.ceil(filteredItems.value.length / perPage.value);
-});
-
 const displayedItems = computed(() => {
   const startIndex = (currentPage.value - 1) * perPage.value;
   const endIndex = startIndex + perPage.value;
   return filteredItems.value.slice(startIndex, endIndex);
 });
+const totalPages = computed(() => {
+  return Math.ceil(filteredItems.value.length / perPage.value);
+});
 
 const addToCart = async (item) => {
   try {
-    await api.post("/api/carrito", {
-      idusers: userStore.user?.id,
+    const dto = {
+      idusers: user.value?.id,
       title: item.title,
       description: item.description,
       image: item.image,
       price: item.price,
       discount: item.discount,
       finalprice: item.finalprice,
-    });
+    };
+    await putToCart(dto);
+    await getCartByID(user.value?.id);
     $q.notify({
       message: "Agregado con exito",
       icon: "check",
@@ -196,15 +209,6 @@ const addToCart = async (item) => {
 
 const buyProduct = (id) => {
   console.log(id);
-};
-
-onMounted(async () => {
-  await getPasteles();
-});
-
-const getPasteles = async () => {
-  const { data } = await api.get("/api/catpasteles");
-  products.value = data;
 };
 </script>
 <style scoped lang="scss">

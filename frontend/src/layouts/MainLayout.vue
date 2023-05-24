@@ -19,7 +19,7 @@
             padding="2px"
             icon-right="settings_applications"
             to="/admin/dashboard"
-            v-if="userStore.user"
+
           />
           <q-btn
             unelevated
@@ -27,14 +27,14 @@
             padding="5px"
             label="Iniciar sesión"
             to="login"
-            v-if="!userStore.user"
+
           >
             <q-avatar size="42px" class="q-ml-xs">
               <img fit="fill" src="~/assets/no_user_logo.png" />
             </q-avatar>
           </q-btn>
           <q-btn-dropdown
-            v-else
+
             dense
             stretch
             unelevated
@@ -92,7 +92,7 @@
             padding="5px"
             label="Mi Carrito"
             icon-right="shopping_cart"
-            v-if="userStore?.user"
+
             @click="toggleRightDrawer"
           >
             <q-badge
@@ -177,13 +177,18 @@ import { useUserStore } from "src/stores/Auth";
 import { storeToRefs } from "pinia";
 import { api } from "src/boot/axios";
 import { useProductStore } from "src/stores/ProductStore";
+import { useQuasar } from "quasar";
 
-const userStore = useUserStore();
+// const userStore = useUserStore();
+const $q = useQuasar();
 const { getUser } = useUserStore();
 const { carritoCantidad } = storeToRefs(useProductStore());
 const { user } = storeToRefs(useUserStore());
 onMounted(async () => {
-  await getUser();
+  // const cookie = q.cookie.
+  if(cookie.length > 0){
+    await getUser();
+  }
 });
 
 const logout = async () => {

@@ -82,8 +82,10 @@ const { getCartByID } = useProductStore();
 const { carrito } = storeToRefs(useProductStore());
 const { user } = storeToRefs(useUserStore());
 onMounted(async () => {
-  await getUser();
+  if(user.value !== null){
+    await getUser();
   await getCartByID(user.value.id);
+  }
 });
 
 const $q = useQuasar();

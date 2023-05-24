@@ -145,15 +145,14 @@ const { user, userauth } = storeToRefs(useUserStore());
 const { pasteles } = storeToRefs(useProductStore());
 
 onMounted(async () => {
-  try {
+  if(user.value !== null){
     await getUser();
-  } catch (error) {
-    console.log("Error aqui > ", error);
-  }
-  if (userauth === true) {
-  } else {
     await getCartByID(user.value?.id);
   }
+  // if (userauth === true) {
+  // } else {
+  //   await getCartByID(user.value?.id);
+  // }
   await getPasteles();
 });
 

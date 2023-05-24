@@ -10,8 +10,9 @@ export const useUserStore = defineStore("user", {
   actions: {
     async getUser() {
       try {
-        const res = await axios.get("http://localhost:8000/api/user");
-        this.user = res.data;
+        const {data} = await axios.get("http://localhost:8000/api/user");
+        this.user = data;
+        console.log('AJGJGJGJHGJGJ', data);
         this.userauth = true;
       } catch (error) {
         if (error.response && error.response.status === 401) {

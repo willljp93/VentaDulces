@@ -132,7 +132,8 @@ const registerForm = reactive({
 
 async function submitLogin() {
   try {
-    await api.post("http://localhost:8000/login", loginForm);
+   const lol = await api.post("http://localhost:8000/login", loginForm);
+   console.log('LOL', lol);
     router.push({ path: "/" });
   } catch (error) {
     console.log("MI ERROR: ", error);

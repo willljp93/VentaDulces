@@ -8,7 +8,6 @@
       dense
       wrap-cells
       table-colspan
-      rows-per-page-options="0"
       title="Carrito de Compras"
       :rows="carrito"
       :columns="columns"

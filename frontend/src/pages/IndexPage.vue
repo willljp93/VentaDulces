@@ -175,6 +175,7 @@
                       icon="shopping_cart"
                       color="primary"
                       label="Agregar al carrito"
+                      :disable="!user"
                       @click="addToCart(featured)"
                     />
                   </q-card-actions>
@@ -291,16 +292,23 @@
 </template>
 
 <script setup>
-import { api } from "src/boot/axios";
+import { useQuasar } from "quasar";
 import { ref, onMounted } from "vue";
+import { useIndexStore } from "src/stores/IndexStore";
+import { useProductStore } from "src/stores/ProductStore";
+import { useUserStore } from "src/stores/Auth";
+import { storeToRefs } from "pinia";
+
+const $q = useQuasar();
+
+const { getFeatureds, getPromotions, getTestimonials } = useIndexStore();
+const { featureds, promotions, testimonials } = storeToRefs(useIndexStore());
+const { user } = storeToRefs(useUserStore());
+const { putToCart, getCartByID } = useProductStore();
 
 onMounted(async () => {
   await getFeatureds();
-});
-onMounted(async () => {
   await getPromotions();
-});
-onMounted(async () => {
   await getTestimonials();
 });
 
@@ -308,28 +316,34 @@ const hoveredCard = ref(null);
 const slide = ref(1);
 const autoplay = ref(true);
 
-const featureds = ref([]);
-const promotions = ref([]);
-const testimonials = ref([]);
-
-const getFeatureds = async () => {
-  const { data } = await api.get("/api/featureds");
-  featureds.value = data;
-};
-const getPromotions = async () => {
-  const { data } = await api.get("/api/promotions");
-  promotions.value = data;
-};
-const getTestimonials = async () => {
-  const { data } = await api.get("/api/testimonials");
-  testimonials.value = data;
-};
-
 const tab = ref("promotions");
 
-function addToCart(product) {
-  console.log(`Agregado al carrito: ${(product.id, product.name)}`);
-}
+const addToCart = async (featured) => {
+  try {
+    const data = {
+      idusers: user.value?.id,
+      title: featured.name,
+      description: featured.description,
+      image: featured.image,
+      price: featured.price,
+      discount: featured.discount,
+      finalprice: featured.finalprice,
+    };
+    await putToCart(data);
+    await getCartByID(user.value.id);
+    $q.notify({
+      message: "Agregado con exito",
+      icon: "check",
+      color: "positive",
+    });
+  } catch (error) {
+    $q.notify({
+      message: "Error al agregar",
+      icon: "times",
+      color: "negative",
+    });
+  }
+};
 function buyItem(product) {
   console.log(`Comprado: ${(product.id, product.name)}`);
 }

@@ -19,7 +19,6 @@
             padding="2px"
             icon-right="settings_applications"
             to="/admin/dashboard"
-
           />
           <q-btn
             unelevated
@@ -27,14 +26,14 @@
             padding="5px"
             label="Iniciar sesión"
             to="login"
-
+            v-if="!user"
           >
             <q-avatar size="42px" class="q-ml-xs">
               <img fit="fill" src="~/assets/no_user_logo.png" />
             </q-avatar>
           </q-btn>
           <q-btn-dropdown
-
+            v-if="user"
             dense
             stretch
             unelevated
@@ -92,16 +91,15 @@
             padding="5px"
             label="Mi Carrito"
             icon-right="shopping_cart"
-
             @click="toggleRightDrawer"
           >
             <q-badge
-            style="margin-top: -0.1rem"
+              style="margin-top: 0.3rem"
               floating
               transparent
               color="red"
               >{{ carritoCantidad }}</q-badge
-              >
+            >
           </q-btn>
         </div>
       </q-toolbar>
@@ -181,14 +179,14 @@ import { useQuasar } from "quasar";
 
 // const userStore = useUserStore();
 const $q = useQuasar();
-const { getUser } = useUserStore();
+const { getUser, getAllCookies } = useUserStore();
 const { carritoCantidad } = storeToRefs(useProductStore());
-const { user } = storeToRefs(useUserStore());
+const { user, cookies } = storeToRefs(useUserStore());
 onMounted(async () => {
-  // const cookie = q.cookie.
-  if(cookie.length > 0){
+  // getAllCookies() ;
+  // if(cookies !== null){
     await getUser();
-  }
+  // }
 });
 
 const logout = async () => {

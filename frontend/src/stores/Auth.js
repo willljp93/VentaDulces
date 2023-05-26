@@ -1,40 +1,31 @@
 import { defineStore } from "pinia";
 import axios from "axios";
+import { useQuasar } from "quasar";
 
 export const useUserStore = defineStore("user", {
   state: () => ({
     user: null,
-    userauth: false,
+    cookies: {},
+    token: null,
   }),
 
   actions: {
+    async getCookie() {
+      return this.$cookies.get("laravel_session");
+    },
+
+    async getAllCookies() {
+      const $q = useQuasar();
+      this.cookies = $q.cookies.getAll();
+    },
+
     async getUser() {
       try {
-        const {data} = await axios.get("http://localhost:8000/api/user");
+        // this.token = await this.getCookie();
+        const { data } = await axios.get("http://localhost:8000/api/user");
         this.user = data;
-        console.log('AJGJGJGJHGJGJ', data);
-        this.userauth = true;
-      } catch (error) {
-        if (error.response && error.response.status === 401) {
-          throw new Error("Unauthenticated.");
-        } else {
-          throw error;
-        }
-      }
-    },
-    async signUp(email, password) {
-      const res = await axios.post("http://localhost:8000/register", {
-        email,
-        password,
-      });
-      this.user = res.data;
-    },
-    async signIn(email, password) {
-      const res = await axios.post("http://localhost:8000/login", {
-        email,
-        password,
-      });
-      this.user = res.data;
+        console.log("Usuario: ", data);
+      } catch (error) {}
     },
   },
 });

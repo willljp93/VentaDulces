@@ -86,58 +86,53 @@
             dense
             color="negative"
             icon="delete"
-            @click="deleteFeatured(props.row.id)"
+            @click="deletePromotions(props.row.id)"
           />
         </q-td>
       </template>
     </q-table>
+    <!-- Add - Edit -->
     <q-dialog v-model="showDialogP" persistent>
       <q-card class="cartel row justify-center">
         <q-card-section>
           <q-form>
-            <q-input v-model="tempPromotion.name" label="Nombre" />
-            <q-input v-model="tempPromotion.description" label="Descripción" />
-            <q-input
-              v-model="tempPromotion.price"
-              label="Precio"
-              type="number"
-            />
-            <q-select
-              v-model="tempPromotion.rating"
-              label="Valoración"
-              :options="[1, 2, 3, 4, 5]"
-            />
-            <q-checkbox v-model="tempPromotion.discount" label="Descuento" />
-            <q-input
-              v-if="tempPromotion.discount"
-              v-model="tempPromotion.discountValue"
-              type="number"
-              label="Valor del descuento"
-            />
-            <q-input bottom-slots v-model="tempPromotion.image" label="Imagen">
+            <q-input bottom-slots v-model="tempPromotions.image" label="Imagen">
               <template v-slot:before>
                 <q-avatar>
                   <q-img
-                    v-if="tempPromotion.image"
-                    :src="tempPromotion.image"
+                    v-if="tempPromotions.image"
+                    :src="tempPromotions.image"
                   />
                 </q-avatar>
               </template>
             </q-input>
+            <q-input v-model="tempPromotions.title" label="Nombre" />
+            <q-input v-model="tempPromotions.description" label="Descripción" />
+            <q-input
+              v-model="tempPromotions.discount"
+              type="number"
+              label="Valor del descuento"
+            />
+            <q-input
+              v-model="tempPromotions.expires"
+              type="date"
+              label="Expira"
+            />
+
             <div class="q-mt-md q-gutter-xs">
               <q-btn
                 type="submit"
                 label="Guardar"
                 color="primary"
-                v-if="showEditDialog == true"
-                @click="editFeatured(tempPromotion.id)"
+                v-if="EditP == true"
+                @click="editPromotions(tempPromotions.id)"
               />
               <q-btn
                 type="submit"
                 label="Añadir"
                 color="primary"
-                v-if="showAddDialog == true"
-                @click="addFeatured(tempPromotion)"
+                v-if="AddP == true"
+                @click="addPromotions(tempPromotions)"
               />
               <q-btn label="Cancelar" @click="showDialogP = false" />
             </div>
@@ -145,19 +140,20 @@
         </q-card-section>
       </q-card>
     </q-dialog>
-    <q-dialog v-model="showcardDialogP">
+    <!-- Ver -->
+    <q-dialog v-model="ViewP">
       <q-card class="promocion q-pa-sm" flat bordered>
         <q-item class="q-pa-md">
           <q-item-section
             side
             class="text-orange text-weight-bolder text-subtitle1"
           >
-            {{ tempPromotion.title }}
+            {{ tempPromotions.title }}
           </q-item-section>
           <q-item-section>
             <q-badge color="red" floating transparent>
               <q-item-label class="discount text-weight-bold">
-                {{ tempPromotion.discount }}% de descuento
+                {{ tempPromotions.discount }}% de descuento
               </q-item-label>
             </q-badge>
             <q-item-label caption>
@@ -171,7 +167,7 @@
                 icon="event"
               >
                 <q-item-label caption class="text-dark">
-                  Válido hasta {{ tempPromotion.expires }}
+                  Válido hasta {{ tempPromotions.expires }}
                 </q-item-label>
               </q-chip>
             </q-item-label>
@@ -180,15 +176,15 @@
         <q-separator />
         <q-card-section horizontal>
           <q-card-section class="text-subtitle1 text-dark">
-            {{ tempPromotion.description }}
+            {{ tempPromotions.description }}
           </q-card-section>
           <q-separator vertical />
           <q-card-section class="col-8 self-center no-padding">
             <q-img
               :ratio="4 / 3"
               fit="cover"
-              :src="tempPromotion.image"
-              :alt="tempPromotion.title"
+              :src="tempPromotions.image"
+              :alt="tempPromotions.title"
             />
           </q-card-section>
         </q-card-section>
@@ -197,28 +193,34 @@
   </div>
 </template>
 <script setup>
-import { api } from "src/boot/axios";
-import { useQuasar } from "quasar";
 import { ref, onMounted } from "vue";
+import { useIndexStore } from "src/stores/IndexStore";
+import { storeToRefs } from "pinia";
 
-const $q = useQuasar();
-const promotions = ref([]);
+const { getPromotions, addPromotions, editPromotions, deletePromotions } =
+  useIndexStore();
+const { promotions, tempPromotions, AddP, EditP, ViewP, showDialogP } =
+  storeToRefs(useIndexStore());
+
 const filter = ref("");
-const showDialogP = ref(false);
-const showcardDialogP = ref(false);
-const showEditDialog = ref(false);
-const showAddDialog = ref(false);
-const tempPromotion = ref({});
-
 const columnspromotions = [
   {
     name: "id",
     required: true,
     label: "Id",
-    align: "left",
+    align: "center",
     field: (row) => row.id,
     sortable: true,
+    autoWidth: true,
   },
+  {
+    name: "image",
+    label: "Imagen",
+    field: "image",
+    align: "center",
+    autoWidth: true,
+  },
+
   {
     name: "title",
     required: true,
@@ -226,6 +228,7 @@ const columnspromotions = [
     align: "left",
     field: "title",
     sortable: true,
+    autoWidth: true,
   },
   {
     name: "description",
@@ -233,6 +236,8 @@ const columnspromotions = [
     label: "Descripción",
     field: "description",
     sortable: false,
+    classes: "ellipsis",
+    style: "max-width: 400px",
   },
   {
     name: "discount",
@@ -240,6 +245,7 @@ const columnspromotions = [
     field: "discount",
     sortable: true,
     align: "center",
+    autoWidth: true,
   },
   {
     name: "expires",
@@ -247,111 +253,33 @@ const columnspromotions = [
     field: "expires",
     sortable: true,
     align: "center",
+    autoWidth: true,
   },
-  { name: "image", label: "Imagen", field: "image", align: "center" },
-  { name: "actions", label: "Acciones", align: "center" },
+  { name: "actions", label: "Acciones", align: "center", autoWidth: true },
 ];
 
 onMounted(async () => {
-  await getFeatureds();
+  await getPromotions();
 });
 
 const openViewDialog = (row) => {
-  tempPromotion.value = { ...row };
-  showcardDialogP.value = true;
+  tempPromotions.value = { ...row };
+  ViewP.value = true;
 };
 const openEditDialog = (row) => {
-  tempPromotion.value = { ...row };
-  showAddDialog.value = false;
-  showEditDialog.value = true;
+  tempPromotions.value = { ...row };
+  AddP.value = false;
+  EditP.value = true;
   showDialogP.value = true;
 };
 const openAddDialog = () => {
-  tempPromotion.value = {};
-  showAddDialog.value = true;
-  showEditDialog.value = false;
+  tempPromotions.value = {};
+  AddP.value = true;
+  EditP.value = false;
   showDialogP.value = true;
 };
-
-const getFeatureds = async () => {
-  const { data } = await api.get("/api/promotions");
-  promotions.value = data;
-};
-
-const addFeatured = async (newFeatured) => {
-  try {
-    await api.post("/api/promotions", newFeatured);
-    $q.notify({
-      message: "Agregado con exito",
-      icon: "check",
-      color: "positive",
-    });
-    await getFeatureds();
-    showDialogP.value = false;
-  } catch (error) {
-    $q.notify({
-      message: "Error al agregar",
-      icon: "times",
-      color: "negative",
-    });
-  }
-};
-
-const editFeatured = async (id) => {
-  if (!id) {
-    $q.notify({
-      message: "Error al editar",
-      icon: "times",
-      color: "negative",
-    });
-    return;
-  }
-  try {
-    await api.patch(`/api/promotions/${id}`, tempPromotion.value);
-    $q.notify({
-      message: "Editado con éxito",
-      icon: "check",
-      color: "positive",
-    });
-    await getFeatureds();
-    showDialogP.value = false;
-    tempPromotion.value = {};
-  } catch (error) {
-    $q.notify({
-      message: "Error al editar",
-      icon: "times",
-      color: "negative",
-    });
-  }
-};
-
-const deleteFeatured = async (id) => {
-  try {
-    $q.dialog({
-      html: true,
-      title: '<span class="text-red">Eliminar</span>',
-      message: "Estas seguro que deseas eliminar la fila",
-      cancel: { color: "positive" },
-      ok: { color: "negative" },
-      persistent: true,
-    }).onOk(async () => {
-      await api.delete(`/api/promotions/${id}`);
-      $q.notify({
-        message: "Eliminado con exito",
-        icon: "check",
-        color: "positive",
-      });
-      await getFeatureds();
-    });
-  } catch (error) {
-    $q.notify({
-      message: "Error al eliminar",
-      icon: "times",
-      color: "negative",
-    });
-  }
-};
 </script>
+
 <style lang="scss">
 .mytable2 {
   .q-table__top,

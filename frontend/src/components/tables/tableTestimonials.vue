@@ -1,5 +1,4 @@
 <template>
-  <!-- Promociones -->
   <div class="q-pa-md">
     <q-table
       class="mytable3"
@@ -86,26 +85,16 @@
             dense
             color="negative"
             icon="delete"
-            @click="deleteTestimonial(props.row.id)"
+            @click="deleteTestimonials(props.row.id)"
           />
         </q-td>
       </template>
     </q-table>
+    <!-- Añadir - Editar -->
     <q-dialog v-model="showDialogT" persistent>
       <q-card class="dialog">
         <q-card-section>
           <q-form>
-            <q-input v-model="tempTestimonials.name" label="Nombre" />
-            <q-input
-              v-model="tempTestimonials.text"
-              type="textarea"
-              label="Descripción"
-            />
-            <q-select
-              v-model="tempTestimonials.rating"
-              label="Valoración"
-              :options="[1, 2, 3, 4, 5]"
-            />
             <q-input
               bottom-slots
               v-model="tempTestimonials.avatar"
@@ -120,20 +109,32 @@
                 </q-avatar>
               </template>
             </q-input>
+            <q-input v-model="tempTestimonials.name" label="Nombre" />
+            <q-input
+              v-model="tempTestimonials.text"
+              type="textarea"
+              label="Descripción"
+            />
+            <q-select
+              v-model="tempTestimonials.rating"
+              label="Valoración"
+              :options="[1, 2, 3, 4, 5]"
+            />
+
             <div class="q-mt-md q-gutter-xs">
               <q-btn
                 type="submit"
                 label="Guardar"
                 color="primary"
-                v-if="showEditDialog == true"
-                @click="editTestimonial(tempTestimonials.id)"
+                v-if="EditT == true"
+                @click="editTestimonials(tempTestimonials.id)"
               />
               <q-btn
                 type="submit"
                 label="Añadir"
                 color="primary"
-                v-if="showAddDialog == true"
-                @click="addTestimonial(tempTestimonials)"
+                v-if="AddT == true"
+                @click="addTestimonials(tempTestimonials)"
               />
               <q-btn label="Cancelar" @click="showDialogT = false" />
             </div>
@@ -141,8 +142,8 @@
         </q-card-section>
       </q-card>
     </q-dialog>
-
-    <q-dialog v-model="showcardDialogT">
+    <!-- Ver -->
+    <q-dialog v-model="ViewT">
       <q-card class="testimonial-card text-dark col-6 q-pa-sm">
         <q-item>
           <q-item-section avatar>
@@ -173,29 +174,37 @@
   </div>
 </template>
 <script setup>
-import { api } from "src/boot/axios";
-import { useQuasar } from "quasar";
 import { ref, onMounted } from "vue";
+import { useIndexStore } from "src/stores/IndexStore";
+import { storeToRefs } from "pinia";
 
-const $q = useQuasar();
-const testimonials = ref([]);
+const {
+  getTestimonials,
+  addTestimonials,
+  editTestimonials,
+  deleteTestimonials,
+} = useIndexStore();
+const { testimonials, tempTestimonials, AddT, EditT, ViewT, showDialogT } =
+  storeToRefs(useIndexStore());
+
 const filter = ref("");
-const showDialogT = ref(false);
-const showcardDialogT = ref(false);
-const showEditDialog = ref(false);
-const showAddDialog = ref(false);
-const tempTestimonials = ref({});
-
 const columnstestimonials = [
   {
     name: "id",
     required: true,
     label: "Id",
-    align: "left",
+    align: "center",
     field: (row) => row.id,
     sortable: true,
+    autoWidth: true,
   },
-  { name: "avatar", label: "Avatar", field: "avatar", align: "center" },
+  {
+    name: "avatar",
+    label: "Avatar",
+    field: "avatar",
+    align: "center",
+    autoWidth: true,
+  },
   {
     name: "name",
     required: true,
@@ -203,6 +212,7 @@ const columnstestimonials = [
     align: "left",
     field: (row) => row.name,
     sortable: true,
+    autoWidth: true,
   },
   {
     name: "text",
@@ -210,8 +220,18 @@ const columnstestimonials = [
     label: "Texto",
     field: "text",
     sortable: false,
+    classes: "ellipsis",
+    style: "max-width: 520px",
   },
-  { name: "actions", label: "Acciones", align: "center" },
+  {
+    name: "rating",
+    align: "center",
+    label: "Valoración",
+    field: "rating",
+    sortable: true,
+    autoWidth: true,
+  },
+  { name: "actions", label: "Acciones", align: "center", autoWidth: true },
 ];
 
 onMounted(async () => {
@@ -220,100 +240,22 @@ onMounted(async () => {
 
 const openViewDialog = (row) => {
   tempTestimonials.value = { ...row };
-  showcardDialogT.value = true;
+  ViewT.value = true;
 };
 const openEditDialog = (row) => {
   tempTestimonials.value = { ...row };
-  showAddDialog.value = false;
-  showEditDialog.value = true;
+  AddT.value = false;
+  EditT.value = true;
   showDialogT.value = true;
 };
 const openAddDialog = () => {
   tempTestimonials.value = {};
-  showAddDialog.value = true;
-  showEditDialog.value = false;
+  AddT.value = true;
+  EditT.value = false;
   showDialogT.value = true;
 };
-
-const getTestimonials = async () => {
-  const { data } = await api.get("/api/testimonials");
-  testimonials.value = data;
-};
-
-const addTestimonial = async (newTestimonial) => {
-  try {
-    await api.post("/api/testimonials", newTestimonial);
-    $q.notify({
-      message: "Agregado con exito",
-      icon: "check",
-      color: "positive",
-    });
-    await getFeatureds();
-    showDialogT.value = false;
-  } catch (error) {
-    $q.notify({
-      message: "Error al agregar",
-      icon: "times",
-      color: "negative",
-    });
-  }
-};
-
-const editTestimonial = async (id) => {
-  if (!id) {
-    $q.notify({
-      message: "Error al editar",
-      icon: "times",
-      color: "negative",
-    });
-    return;
-  }
-  try {
-    await api.patch(`/api/testimonials/${id}`, tempTestimonials.value);
-    $q.notify({
-      message: "Editado con éxito",
-      icon: "check",
-      color: "positive",
-    });
-    await getTestimonials();
-    showDialogT.value = false;
-    tempTestimonials.value = {};
-  } catch (error) {
-    $q.notify({
-      message: "Error al editar",
-      icon: "times",
-      color: "negative",
-    });
-  }
-};
-
-const deleteTestimonial = async (id) => {
-  try {
-    $q.dialog({
-      html: true,
-      title: '<span class="text-red">Eliminar</span>',
-      message: "Estas seguro que deseas eliminar la fila",
-      cancel: { color: "positive" },
-      ok: { color: "negative" },
-      persistent: true,
-    }).onOk(async () => {
-      await api.delete(`/api/testimonials/${id}`);
-      $q.notify({
-        message: "Eliminado con exito",
-        icon: "check",
-        color: "positive",
-      });
-      await getTestimonials();
-    });
-  } catch (error) {
-    $q.notify({
-      message: "Error al eliminar",
-      icon: "times",
-      color: "negative",
-    });
-  }
-};
 </script>
+
 <style lang="scss">
 .mytable3 {
   .q-table__top,

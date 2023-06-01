@@ -60,6 +60,10 @@ const routes = [
         path: "tablesdata",
         component: () => import("pages/Admin/TablesDataPage.vue"),
       },
+      {
+        path: "tablesproduct",
+        component: () => import("pages/Admin/TablesProductCatPage.vue"),
+      },
     ],
   },
 

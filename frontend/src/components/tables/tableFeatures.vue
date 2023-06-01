@@ -90,33 +90,37 @@
         </q-td>
       </template>
     </q-table>
+    <!-- Añadir - Editar -->
     <q-dialog v-model="showDialogF" persistent>
       <q-card class="cartel row justify-center">
         <q-card-section>
           <q-form>
-            <q-input v-model="tempFeatured.name" label="Nombre" />
-            <q-input v-model="tempFeatured.description" label="Descripción" />
+            <q-input v-model="tempFeatureds.name" label="Nombre" />
+            <q-input v-model="tempFeatureds.description" label="Descripción" />
             <q-input
-              v-model="tempFeatured.price"
+              v-model="tempFeatureds.price"
               label="Precio"
               type="number"
             />
             <q-select
-              v-model="tempFeatured.rating"
+              v-model="tempFeatureds.rating"
               label="Valoración"
               :options="[1, 2, 3, 4, 5]"
             />
-            <q-checkbox v-model="tempFeatured.discount" label="Descuento" />
+            <q-checkbox v-model="tempFeatureds.discount" label="Descuento" />
             <q-input
-              v-if="tempFeatured.discount"
-              v-model="tempFeatured.discountValue"
+              v-if="tempFeatureds.discount"
+              v-model="tempFeatureds.discountValue"
               type="number"
               label="Valor del descuento"
             />
-            <q-input bottom-slots v-model="tempFeatured.image" label="Imagen">
+            <q-input bottom-slots v-model="tempFeatureds.image" label="Imagen">
               <template v-slot:before>
                 <q-avatar>
-                  <q-img v-if="tempFeatured.image" :src="tempFeatured.image" />
+                  <q-img
+                    v-if="tempFeatureds.image"
+                    :src="tempFeatureds.image"
+                  />
                 </q-avatar>
               </template>
             </q-input>
@@ -125,15 +129,15 @@
                 type="submit"
                 label="Guardar"
                 color="primary"
-                v-if="showEditDialog == true"
-                @click="editFeatured(tempFeatured.id)"
+                v-if="EditF"
+                @click="editFeatured(tempFeatureds.id)"
               />
               <q-btn
                 type="submit"
                 label="Añadir"
                 color="primary"
-                v-if="showAddDialog == true"
-                @click="addFeatured(tempFeatured)"
+                v-if="AddF"
+                @click="addFeatured(tempFeatureds)"
               />
               <q-btn label="Cancelar" @click="showDialogF = false" />
             </div>
@@ -141,25 +145,26 @@
         </q-card-section>
       </q-card>
     </q-dialog>
-    <q-dialog v-model="showcardDialogF">
+    <!-- Ver -->
+    <q-dialog v-model="ViewF">
       <div class="q-pa-sm">
         <q-card class="featuredcard">
           <q-img
             class="featuredcardimg"
             :ratio="16 / 9"
             fit="cover"
-            :src="tempFeatured.image"
-            :alt="tempFeatured.name"
+            :src="tempFeatureds.image"
+            :alt="tempFeatureds.name"
           />
 
           <q-badge
             class="q-badge"
-            v-if="tempFeatured.discount"
+            v-if="tempFeatureds.discount"
             color="positive"
             floating
             transparent
           >
-            {{ tempFeatured.discount }}%
+            {{ tempFeatureds.discount }}%
           </q-badge>
 
           <q-badge
@@ -176,26 +181,26 @@
                 header=""
                 class="col text-h6 text-left ellipsis text-purple q-pt-none"
               >
-                {{ tempFeatured.name }}
+                {{ tempFeatureds.name }}
               </q-item-label>
             </div>
             <q-rating
               self-end
-              v-model="tempFeatured.rating"
+              v-model="tempFeatureds.rating"
               icon="star_border"
               icon-selected="star"
               :max="5"
               size="1.5em"
-              v-if="tempFeatured.rating"
+              v-if="tempFeatureds.rating"
               readonly="true"
             />
           </q-card-section>
           <q-card-section class="q-pt-none">
             <div class="text-subtitle1 text-right text-dark">
-              $ {{ tempFeatured.price }}
+              $ {{ tempFeatureds.price }}
             </div>
             <div class="text-caption text-grey">
-              {{ tempFeatured.description }}
+              {{ tempFeatureds.description }}
             </div>
           </q-card-section>
         </q-card>
@@ -204,27 +209,32 @@
   </div>
 </template>
 <script setup>
-import { api } from "src/boot/axios";
-import { useQuasar } from "quasar";
 import { ref, onMounted } from "vue";
+import { useIndexStore } from "src/stores/IndexStore";
+import { storeToRefs } from "pinia";
 
-const $q = useQuasar();
-const featureds = ref([]);
+const { getFeatureds, addFeatured, editFeatured, deleteFeatured } =
+  useIndexStore();
+const { featureds, tempFeatureds, AddF, EditF, ViewF, showDialogF } =
+  storeToRefs(useIndexStore());
+
 const filter = ref("");
-const showDialogF = ref(false);
-const showcardDialogF = ref(false);
-const showEditDialog = ref(false);
-const showAddDialog = ref(false);
-const tempFeatured = ref({});
-
 const columnsfeatureds = [
   {
     name: "id",
     required: true,
     label: "Id",
-    align: "left",
+    align: "center",
     field: (row) => row.id,
     sortable: true,
+    autoWidth: true,
+  },
+  {
+    name: "image",
+    label: "Imagen",
+    field: "image",
+    align: "center",
+    autoWidth: true,
   },
   {
     name: "name",
@@ -233,6 +243,7 @@ const columnsfeatureds = [
     align: "left",
     field: (row) => row.name,
     sortable: true,
+    autoWidth: true,
   },
   {
     name: "description",
@@ -240,6 +251,8 @@ const columnsfeatureds = [
     label: "Descripción",
     field: "description",
     sortable: false,
+    classes: "ellipsis",
+    style: "max-width: 300px",
   },
   {
     name: "price",
@@ -248,6 +261,7 @@ const columnsfeatureds = [
     format: (val) => `${val}`,
     align: "center",
     sortable: true,
+    autoWidth: true,
   },
   {
     name: "rating",
@@ -255,6 +269,7 @@ const columnsfeatureds = [
     field: "rating",
     sortable: true,
     align: "center",
+    autoWidth: true,
   },
   {
     name: "discount",
@@ -262,9 +277,10 @@ const columnsfeatureds = [
     field: "discount",
     sortable: true,
     align: "center",
+    autoWidth: true,
   },
-  { name: "image", label: "Imagen", field: "image", align: "center" },
-  { name: "actions", label: "Acciones", align: "center" },
+
+  { name: "actions", label: "Acciones", align: "center", autoWidth: true },
 ];
 
 onMounted(async () => {
@@ -272,99 +288,20 @@ onMounted(async () => {
 });
 
 const openViewDialog = (row) => {
-  tempFeatured.value = { ...row };
-  showcardDialogF.value = true;
+  tempFeatureds.value = { ...row };
+  ViewF.value = true;
 };
 const openEditDialog = (row) => {
-  tempFeatured.value = { ...row };
-  showAddDialog.value = false;
-  showEditDialog.value = true;
+  tempFeatureds.value = { ...row };
+  AddF.value = false;
+  EditF.value = true;
   showDialogF.value = true;
 };
 const openAddDialog = () => {
-  tempFeatured.value = {};
-  showAddDialog.value = true;
-  showEditDialog.value = false;
+  tempFeatureds.value = {};
+  AddF.value = true;
+  EditF.value = false;
   showDialogF.value = true;
-};
-
-const getFeatureds = async () => {
-  const { data } = await api.get("/api/featureds");
-  featureds.value = data;
-};
-
-const addFeatured = async (newFeatured) => {
-  try {
-    await api.post("/api/featureds", newFeatured);
-    $q.notify({
-      message: "Agregado con exito",
-      icon: "check",
-      color: "positive",
-    });
-    await getFeatureds();
-    showDialogF.value = false;
-  } catch (error) {
-    $q.notify({
-      message: "Error al agregar",
-      icon: "times",
-      color: "negative",
-    });
-  }
-};
-
-const editFeatured = async (id) => {
-  if (!id) {
-    $q.notify({
-      message: "Error al editar ;)",
-      icon: "times",
-      color: "negative",
-    });
-    return;
-  }
-  try {
-    await api.patch(`/api/featureds/${id}`, tempFeatured.value);
-    $q.notify({
-      message: "Editado con éxito",
-      icon: "check",
-      color: "positive",
-    });
-    await getFeatureds();
-    showDialogF.value = false;
-    tempFeatured.value = {};
-  } catch (error) {
-    $q.notify({
-      message: "Error al editar",
-      icon: "times",
-      color: "negative",
-    });
-  }
-};
-
-const deleteFeatured = async (id) => {
-  try {
-    $q.dialog({
-      html: true,
-      title: '<span class="text-red">Eliminar</span>',
-      message: "Estas seguro que deseas eliminar la fila",
-      cancel: { color: "positive" },
-      ok: { color: "negative" },
-      persistent: true,
-    }).onOk(async () => {
-      await api.delete(`/api/featureds/${id}`);
-      $q.notify({
-        message: "Eliminado con exito",
-        icon: "check",
-        color: "positive",
-      });
-      await getFeatureds();
-    });
-  } catch (error) {
-    $q.notify({
-      message: "Error al eliminar",
-      icon: "times",
-      color: "negative",
-    });
-  }
 };
 </script>
 <style lang="scss">

@@ -140,19 +140,27 @@
                 <q-icon name="table_chart" />
               </q-item-section>
               <q-item-section>
-                <q-item-label>Tables Data</q-item-label>
+                <q-item-label>Página de Inicio </q-item-label>
               </q-item-section>
             </q-item>
             <!-- ========== -->
-            <q-item to="/Lock" active-class="q-item-no-link-highlighting">
+            <q-item to="/admin/tablesproduct" active-class="q-item-no-link-highlighting">
+              <q-item-section avatar>
+                <q-icon name="shopping_cart" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>Catálogos de Productos</q-item-label>
+              </q-item-section>
+            </q-item>
+            <!-- ========== -->
+            <!-- <q-item to="/Lock" active-class="q-item-no-link-highlighting">
               <q-item-section avatar>
                 <q-icon name="lock" />
               </q-item-section>
               <q-item-section>
                 <q-item-label>Lock Screen</q-item-label>
               </q-item-section>
-            </q-item>
-
+            </q-item> -->
             <!-- ========== -->
             <q-item-label header class="text-weight-bolder text-white"
               >Generic</q-item-label
@@ -248,15 +256,6 @@
           </q-item-section>
           <q-item-section>
             <q-item-label>Checkout</q-item-label>
-          </q-item-section>
-        </q-item>
-        <!-- ========== -->
-        <q-item to="/Ecommerce" active-class="q-item-no-link-highlighting">
-          <q-item-section avatar>
-            <q-icon name="shopping_cart" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Catálogos de productos</q-item-label>
           </q-item-section>
         </q-item>
         <!-- ========== -->

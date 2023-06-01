@@ -92,43 +92,64 @@
     </q-table>
     <!-- Añadir - Editar -->
     <q-dialog v-model="showDialogPt" persistent>
-      <q-card class="dialog">
+      <q-card class="dialog addedit">
         <q-card-section>
-          <q-form>
-            <q-input bottom-slots v-model="tempPasteles.image" label="Imagen">
+          <q-form class="row justify-center">
+            <q-input
+              class="col-10"
+              bottom-slots
+              v-model="tempPasteles.image"
+              label="Imagen"
+            >
               <template v-slot:before>
-                <q-avatar>
-                  <q-img v-if="tempPasteles.image" :src="tempPasteles.image" />
+                <q-avatar size="100px">
+                  <q-img
+                    :ratio="1"
+                    v-if="tempPasteles.image"
+                    :src="tempPasteles.image"
+                  />
                 </q-avatar>
               </template>
             </q-input>
-            <q-input v-model="tempPasteles.title" type="text" label="Título" />
             <q-input
-              v-model="tempPasteles.discount"
-              type="number"
-              label="Descuento"
+              class="col-12"
+              v-model="tempPasteles.title"
+              type="text"
+              label="Título"
             />
+            <div class="row q-col-gutter-xs justify-between">
+              <q-input
+                class="col-3"
+                v-model="tempPasteles.discount"
+                type="number"
+                label="Descuento"
+              />
+              <q-input
+                class="col-3"
+                v-model="tempPasteles.price"
+                type="number"
+                label="Precio"
+              />
+              <q-select
+                class="col-3"
+                v-model="tempPasteles.rating"
+                label="Valoración"
+                :options="[1, 2, 3, 4, 5]"
+              />
+              <q-select
+                class="col-3"
+                v-model="tempPasteles.available"
+                label="Disponible"
+                :options="[true, false]"
+              />
+            </div>
             <q-input
-              v-model="tempPasteles.price"
-              type="number"
-              label="Precio"
-            />
-            <q-select
-              v-model="tempPasteles.rating"
-              label="Valoración"
-              :options="[1, 2, 3, 4, 5]"
-            />
-            <q-input
+              class="col-12"
               v-model="tempPasteles.description"
               type="textarea"
               label="Descripción"
             />
-            <q-select
-              v-model="tempPasteles.available"
-              label="Disponible"
-              :options="[true, false]"
-            />
-            <div class="q-mt-md q-gutter-xs">
+            <div class="q-mt-md justify-center q-gutter-lg">
               <q-btn
                 type="submit"
                 label="Guardar"
@@ -151,85 +172,79 @@
     </q-dialog>
     <!-- Ver -->
     <q-dialog v-model="ViewPt">
-      <q-card
-        class="my-card"
-        :key="item.id"
-        @mouseover="hoveredCard = item.id"
-        @mouseleave="hoveredCard = null"
-        :class="{ 'shadow-2': hoveredCard === item.id }"
-      >
-        <q-img class="q-img" :src="item.image" :alt="item.title" />
-
-        <q-badge
-          class="q-badge"
-          v-if="item.discount"
-          color="info"
-          floating
-          transparent
-        >
-          {{ item.discount }}%
-        </q-badge>
-
-        <q-badge
-          class="q-badge"
-          v-else
-          color="negative"
-          floating
-          transparent
-          label="Agotado"
-        />
-
-        <q-card-section>
-          <q-btn
-            fab
-            color="primary"
-            icon="shopping_bag"
-            class="absolute"
-            style="top: 0; right: 12px; transform: translateY(-50%)"
+      <q-card class="my-cardroot">
+        <q-card>
+          <q-img
+            class="q-img1"
+            :src="tempPasteles.image"
+            :alt="tempPasteles.title"
           />
-
-          <div class="row no-wrap items-center">
-            <q-item-label header="" class="col text-h6 ellipsis">
-              {{ item.title }}
-            </q-item-label>
-            <div
-              class="col-auto text-grey text-caption row no-wrap items-center"
-            >
-              Comprar
-            </div>
-          </div>
-
-          <div align="center">
-            <q-rating
-              v-model="stars"
-              icon="star_border"
-              icon-selected="star"
-              :max="5"
-              size="1.5em"
-              v-if="item.rating"
-              :value="item.rating"
-              :readonly="false"
+          <q-badge
+            class="q-badge"
+            v-if="tempPasteles.discount"
+            color="info"
+            floating
+            transparent
+          >
+            {{ tempPasteles.discount }}%
+          </q-badge>
+          <q-badge
+            class="q-badge"
+            v-else
+            color="negative"
+            floating
+            transparent
+            label="Agotado"
+          />
+          <q-card-section>
+            <q-btn
+              fab
+              color="primary"
+              icon="shopping_bag"
+              class="absolute"
+              style="top: 0; right: 12px; transform: translateY(-50%)"
             />
-          </div>
-        </q-card-section>
-
-        <q-card-section class="q-pt-none">
-          <div class="text-subtitle1 text-right">$ {{ item.price }}</div>
-          <div class="text-caption text-grey text-center">
-            {{ item.description }}
-          </div>
-        </q-card-section>
-
-        <q-separator />
-
-        <q-card-actions vertical align="center">
-          <q-btn
-            flat
-            icon="shopping_cart"
-            color="primary"
-            label="Agregar al carrito"
-          />
-        </q-card-actions>
+            <div class="row no-wrap tempPasteless-center">
+              <q-item-label header="" class="col text-h6 ellipsis">
+                {{ tempPasteles.title }}
+              </q-item-label>
+              <div
+                class="col-auto text-grey text-caption row no-wrap tempPasteless-center"
+              >
+                Comprar
+              </div>
+            </div>
+            <div align="center">
+              <q-rating
+                v-model="stars"
+                icon="star_border"
+                icon-selected="star"
+                :max="5"
+                size="1.5em"
+                v-if="tempPasteles.rating"
+                :value="tempPasteles.rating"
+                :readonly="false"
+              />
+            </div>
+          </q-card-section>
+          <q-card-section class="q-pt-none">
+            <div class="text-subtitle1 text-right">
+              $ {{ tempPasteles.price }}
+            </div>
+            <div class="text-caption text-grey text-center">
+              {{ tempPasteles.description }}
+            </div>
+          </q-card-section>
+          <q-separator />
+          <q-card-actions vertical align="center">
+            <q-btn
+              flat
+              icon="shopping_cart"
+              color="primary"
+              label="Agregar al carrito"
+            />
+          </q-card-actions>
+        </q-card>
       </q-card>
     </q-dialog>
   </div>
@@ -245,6 +260,7 @@ const { pasteles, tempPasteles, AddPt, EditPt, ViewPt, showDialogPt } =
   storeToRefs(useProductStore());
 
 const filter = ref("");
+const stars = ref(0);
 const columnspasteles = [
   {
     name: "id",
@@ -358,24 +374,20 @@ const openAddDialog = () => {
   tbody {
     scroll-margin-top: 48px;
   }
-  .dialog {
-    width: 500px;
-  }
-  .my-card {
-    width: 100%;
-    max-width: 300px;
-    transition: box-shadow 0.2s ease-in-out;
-  }
-  .q-img {
-    height: 150px;
-    object-fit: cover;
-  }
-  .shadow-2 {
-    box-shadow: 0px 0px 10px 2px #00000033;
-    transform: translateY(-5px);
-  }
-  .q-badge {
-    margin-right: 8px;
-  }
+}
+.my-cardroot {
+  width: 300px;
+  padding: 1%;
+}
+.addedit {
+  width: 500px;
+  padding: 2%;
+}
+.q-img1 {
+  height: 150px;
+  object-fit: cover;
+}
+.q-badge {
+  margin-right: 8px;
 }
 </style>

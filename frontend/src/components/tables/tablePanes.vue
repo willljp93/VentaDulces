@@ -1,9 +1,9 @@
 <template>
   <div class="q-pa-md">
     <q-table
-      class="catprod1"
-      :rows="pasteles"
-      :columns="columnspasteles"
+      class="catprod3"
+      :rows="panes"
+      :columns="columnspanes"
       :filter="filter"
       row-key="id"
       no-data-label="No encontre nada para ti"
@@ -14,7 +14,7 @@
       separator="cell"
     >
       <template v-slot:top="props">
-        <div class="col-2 q-table__title text-white">Categoria Pasteles</div>
+        <div class="col-2 q-table__title text-white">Categoria Panes</div>
         <q-space />
         <q-input
           rounded
@@ -85,67 +85,67 @@
             dense
             color="negative"
             icon="delete"
-            @click="deletePasteles(props.row.id)"
+            @click="deletePanes(props.row.id)"
           />
         </q-td>
       </template>
     </q-table>
     <!-- Añadir - Editar -->
-    <q-dialog v-model="showDialogPt" persistent>
+    <q-dialog v-model="showDialogPn" persistent>
       <q-card class="dialog addedit">
         <q-card-section>
           <q-form class="row justify-center">
             <q-input
               class="col-10"
               bottom-slots
-              v-model="tempPasteles.image"
+              v-model="tempPanes.image"
               label="Imagen"
             >
               <template v-slot:before>
                 <q-avatar size="100px">
                   <q-img
                     :ratio="1"
-                    v-if="tempPasteles.image"
-                    :src="tempPasteles.image"
+                    v-if="tempPanes.image"
+                    :src="tempPanes.image"
                   />
                 </q-avatar>
               </template>
             </q-input>
             <q-input
               class="col-12"
-              v-model="tempPasteles.title"
+              v-model="tempPanes.title"
               type="text"
               label="Título"
             />
             <div class="row q-col-gutter-xs justify-between">
               <q-input
                 class="col-3"
-                v-model="tempPasteles.discount"
+                v-model="tempPanes.discount"
                 type="number"
                 label="Descuento"
               />
               <q-input
                 class="col-3"
-                v-model="tempPasteles.price"
+                v-model="tempPanes.price"
                 type="number"
                 label="Precio"
               />
               <q-select
                 class="col-3"
-                v-model="tempPasteles.rating"
+                v-model="tempPanes.rating"
                 label="Valoración"
                 :options="[1, 2, 3, 4, 5]"
               />
               <q-select
                 class="col-3"
-                v-model="tempPasteles.available"
+                v-model="tempPanes.available"
                 label="Disponible"
                 :options="[true, false]"
               />
             </div>
             <q-input
               class="col-12"
-              v-model="tempPasteles.description"
+              v-model="tempPanes.description"
               type="textarea"
               label="Descripción"
             />
@@ -154,39 +154,35 @@
                 type="submit"
                 label="Guardar"
                 color="primary"
-                v-if="EditPt == true"
-                @click="editPasteles(tempPasteles.id)"
+                v-if="EditPn == true"
+                @click="editPanes(tempPanes.id)"
               />
               <q-btn
                 type="submit"
                 label="Añadir"
                 color="primary"
-                v-if="AddPt == true"
-                @click="addPasteles(tempPasteles)"
+                v-if="AddPn == true"
+                @click="addPanes(tempPanes)"
               />
-              <q-btn label="Cancelar" @click="showDialogPt = false" />
+              <q-btn label="Cancelar" @click="showDialogPn = false" />
             </div>
           </q-form>
         </q-card-section>
       </q-card>
     </q-dialog>
     <!-- Ver -->
-    <q-dialog v-model="ViewPt">
+    <q-dialog v-model="ViewPn">
       <q-card class="my-cardroot">
         <q-card>
-          <q-img
-            class="q-img1"
-            :src="tempPasteles.image"
-            :alt="tempPasteles.title"
-          />
+          <q-img class="q-img1" :src="tempPanes.image" :alt="tempPanes.title" />
           <q-badge
             class="q-badge"
-            v-if="tempPasteles.discount"
+            v-if="tempPanes.discount"
             color="info"
             floating
             transparent
           >
-            {{ tempPasteles.discount }}%
+            {{ tempPanes.discount }}%
           </q-badge>
           <q-badge
             class="q-badge"
@@ -206,7 +202,7 @@
             />
             <div class="row no-wrap items-center">
               <q-item-label header="" class="col text-h6 ellipsis">
-                {{ tempPasteles.title }}
+                {{ tempPanes.title }}
               </q-item-label>
               <div
                 class="col-auto text-grey text-caption row no-wrap items-center"
@@ -221,18 +217,16 @@
                 icon-selected="star"
                 :max="5"
                 size="1.5em"
-                v-if="tempPasteles.rating"
-                :value="tempPasteles.rating"
+                v-if="tempPanes.rating"
+                :value="tempPanes.rating"
                 :readonly="false"
               />
             </div>
           </q-card-section>
           <q-card-section class="q-pt-none">
-            <div class="text-subtitle1 text-right">
-              $ {{ tempPasteles.price }}
-            </div>
+            <div class="text-subtitle1 text-right">$ {{ tempPanes.price }}</div>
             <div class="text-caption text-grey text-center">
-              {{ tempPasteles.description }}
+              {{ tempPanes.description }}
             </div>
           </q-card-section>
           <q-separator />
@@ -254,14 +248,14 @@ import { ref, onMounted } from "vue";
 import { useProductStore } from "src/stores/ProductStore";
 import { storeToRefs } from "pinia";
 
-const { getPasteles, addPasteles, editPasteles, deletePasteles } =
-  useProductStore();
-const { pasteles, tempPasteles, AddPt, EditPt, ViewPt, showDialogPt } =
-  storeToRefs(useProductStore());
+const { getPanes, addPanes, editPanes, deletePanes } = useProductStore();
+const { panes, tempPanes, AddPn, EditPn, ViewPn, showDialogPn } = storeToRefs(
+  useProductStore()
+);
 
 const filter = ref("");
 const stars = ref(0);
-const columnspasteles = [
+const columnspanes = [
   {
     name: "id",
     required: true,
@@ -333,33 +327,33 @@ const columnspasteles = [
 ];
 
 onMounted(async () => {
-  await getPasteles();
+  await getPanes();
 });
 
 const openViewDialog = (row) => {
-  tempPasteles.value = { ...row };
-  ViewPt.value = true;
+  tempPanes.value = { ...row };
+  ViewPn.value = true;
 };
 const openEditDialog = (row) => {
-  tempPasteles.value = { ...row };
-  AddPt.value = false;
-  EditPt.value = true;
-  showDialogPt.value = true;
+  tempPanes.value = { ...row };
+  AddPn.value = false;
+  EditPn.value = true;
+  showDialogPn.value = true;
 };
 const openAddDialog = () => {
-  tempPasteles.value = {};
-  AddPt.value = true;
-  EditPt.value = false;
-  showDialogPt.value = true;
+  tempPanes.value = {};
+  AddPn.value = true;
+  EditPn.value = false;
+  showDialogPn.value = true;
 };
 </script>
 
 <style lang="scss">
-.catprod1 {
+.catprod3 {
   .q-table__top,
   .q-table__bottom,
   thead tr:first-child th {
-    background-color: #b9142a;
+    background-color: #b9352a;
   }
   thead tr th {
     position: sticky;

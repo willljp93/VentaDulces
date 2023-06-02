@@ -1,9 +1,9 @@
 <template>
   <div class="q-pa-md">
     <q-table
-      class="catprod1"
-      :rows="pasteles"
-      :columns="columnspasteles"
+      class="catprod4"
+      :rows="reposteria"
+      :columns="columnsreposteria"
       :filter="filter"
       row-key="id"
       no-data-label="No encontre nada para ti"
@@ -14,7 +14,7 @@
       separator="cell"
     >
       <template v-slot:top="props">
-        <div class="col-2 q-table__title text-white">Categoria Pasteles</div>
+        <div class="col-2 q-table__title text-white">Categoria Reposteria</div>
         <q-space />
         <q-input
           rounded
@@ -85,67 +85,67 @@
             dense
             color="negative"
             icon="delete"
-            @click="deletePasteles(props.row.id)"
+            @click="deleteReposteria(props.row.id)"
           />
         </q-td>
       </template>
     </q-table>
     <!-- Añadir - Editar -->
-    <q-dialog v-model="showDialogPt" persistent>
+    <q-dialog v-model="showDialogRp" persistent>
       <q-card class="dialog addedit">
         <q-card-section>
           <q-form class="row justify-center">
             <q-input
               class="col-10"
               bottom-slots
-              v-model="tempPasteles.image"
+              v-model="tempReposteria.image"
               label="Imagen"
             >
               <template v-slot:before>
                 <q-avatar size="100px">
                   <q-img
                     :ratio="1"
-                    v-if="tempPasteles.image"
-                    :src="tempPasteles.image"
+                    v-if="tempReposteria.image"
+                    :src="tempReposteria.image"
                   />
                 </q-avatar>
               </template>
             </q-input>
             <q-input
               class="col-12"
-              v-model="tempPasteles.title"
+              v-model="tempReposteria.title"
               type="text"
               label="Título"
             />
             <div class="row q-col-gutter-xs justify-between">
               <q-input
                 class="col-3"
-                v-model="tempPasteles.discount"
+                v-model="tempReposteria.discount"
                 type="number"
                 label="Descuento"
               />
               <q-input
                 class="col-3"
-                v-model="tempPasteles.price"
+                v-model="tempReposteria.price"
                 type="number"
                 label="Precio"
               />
               <q-select
                 class="col-3"
-                v-model="tempPasteles.rating"
+                v-model="tempReposteria.rating"
                 label="Valoración"
                 :options="[1, 2, 3, 4, 5]"
               />
               <q-select
                 class="col-3"
-                v-model="tempPasteles.available"
+                v-model="tempReposteria.available"
                 label="Disponible"
                 :options="[true, false]"
               />
             </div>
             <q-input
               class="col-12"
-              v-model="tempPasteles.description"
+              v-model="tempReposteria.description"
               type="textarea"
               label="Descripción"
             />
@@ -154,39 +154,39 @@
                 type="submit"
                 label="Guardar"
                 color="primary"
-                v-if="EditPt == true"
-                @click="editPasteles(tempPasteles.id)"
+                v-if="EditRp == true"
+                @click="editReposteria(tempReposteria.id)"
               />
               <q-btn
                 type="submit"
                 label="Añadir"
                 color="primary"
-                v-if="AddPt == true"
-                @click="addPasteles(tempPasteles)"
+                v-if="AddRp == true"
+                @click="addReposteria(tempReposteria)"
               />
-              <q-btn label="Cancelar" @click="showDialogPt = false" />
+              <q-btn label="Cancelar" @click="showDialogRp = false" />
             </div>
           </q-form>
         </q-card-section>
       </q-card>
     </q-dialog>
     <!-- Ver -->
-    <q-dialog v-model="ViewPt">
+    <q-dialog v-model="ViewRp">
       <q-card class="my-cardroot">
         <q-card>
           <q-img
             class="q-img1"
-            :src="tempPasteles.image"
-            :alt="tempPasteles.title"
+            :src="tempReposteria.image"
+            :alt="tempReposteria.title"
           />
           <q-badge
             class="q-badge"
-            v-if="tempPasteles.discount"
+            v-if="tempReposteria.discount"
             color="info"
             floating
             transparent
           >
-            {{ tempPasteles.discount }}%
+            {{ tempReposteria.discount }}%
           </q-badge>
           <q-badge
             class="q-badge"
@@ -206,7 +206,7 @@
             />
             <div class="row no-wrap items-center">
               <q-item-label header="" class="col text-h6 ellipsis">
-                {{ tempPasteles.title }}
+                {{ tempReposteria.title }}
               </q-item-label>
               <div
                 class="col-auto text-grey text-caption row no-wrap items-center"
@@ -221,18 +221,18 @@
                 icon-selected="star"
                 :max="5"
                 size="1.5em"
-                v-if="tempPasteles.rating"
-                :value="tempPasteles.rating"
+                v-if="tempReposteria.rating"
+                :value="tempReposteria.rating"
                 :readonly="false"
               />
             </div>
           </q-card-section>
           <q-card-section class="q-pt-none">
             <div class="text-subtitle1 text-right">
-              $ {{ tempPasteles.price }}
+              $ {{ tempReposteria.price }}
             </div>
             <div class="text-caption text-grey text-center">
-              {{ tempPasteles.description }}
+              {{ tempReposteria.description }}
             </div>
           </q-card-section>
           <q-separator />
@@ -254,14 +254,14 @@ import { ref, onMounted } from "vue";
 import { useProductStore } from "src/stores/ProductStore";
 import { storeToRefs } from "pinia";
 
-const { getPasteles, addPasteles, editPasteles, deletePasteles } =
+const { getReposteria, addReposteria, editReposteria, deleteReposteria } =
   useProductStore();
-const { pasteles, tempPasteles, AddPt, EditPt, ViewPt, showDialogPt } =
+const { reposteria, tempReposteria, AddRp, EditRp, ViewRp, showDialogRp } =
   storeToRefs(useProductStore());
 
 const filter = ref("");
 const stars = ref(0);
-const columnspasteles = [
+const columnsreposteria = [
   {
     name: "id",
     required: true,
@@ -333,33 +333,33 @@ const columnspasteles = [
 ];
 
 onMounted(async () => {
-  await getPasteles();
+  await getReposteria();
 });
 
 const openViewDialog = (row) => {
-  tempPasteles.value = { ...row };
-  ViewPt.value = true;
+  tempReposteria.value = { ...row };
+  ViewRp.value = true;
 };
 const openEditDialog = (row) => {
-  tempPasteles.value = { ...row };
-  AddPt.value = false;
-  EditPt.value = true;
-  showDialogPt.value = true;
+  tempReposteria.value = { ...row };
+  AddRp.value = false;
+  EditRp.value = true;
+  showDialogRp.value = true;
 };
 const openAddDialog = () => {
-  tempPasteles.value = {};
-  AddPt.value = true;
-  EditPt.value = false;
-  showDialogPt.value = true;
+  tempReposteria.value = {};
+  AddRp.value = true;
+  EditRp.value = false;
+  showDialogRp.value = true;
 };
 </script>
 
 <style lang="scss">
-.catprod1 {
+.catprod4 {
   .q-table__top,
   .q-table__bottom,
   thead tr:first-child th {
-    background-color: #b9142a;
+    background-color: #b9462a;
   }
   thead tr th {
     position: sticky;

@@ -145,7 +145,7 @@ const { user, userauth } = storeToRefs(useUserStore());
 const { pasteles } = storeToRefs(useProductStore());
 
 onMounted(async () => {
-  if(user.value !== null){
+  if (user.value !== null) {
     await getUser();
     await getCartByID(user.value?.id);
   }

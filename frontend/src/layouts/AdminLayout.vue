@@ -77,7 +77,7 @@
 
               <div class="column items-center">
                 <q-avatar size="72px">
-                  <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
+                  <img :src="user?.photo" />
                 </q-avatar>
 
                 <div class="text-subtitle1 q-mt-md q-mb-xs">
@@ -144,7 +144,10 @@
               </q-item-section>
             </q-item>
             <!-- ========== -->
-            <q-item to="/admin/tablesproduct" active-class="q-item-no-link-highlighting">
+            <q-item
+              to="/admin/tablesproduct"
+              active-class="q-item-no-link-highlighting"
+            >
               <q-item-section avatar>
                 <q-icon name="shopping_cart" />
               </q-item-section>
@@ -186,6 +189,18 @@
             </q-item>
           </q-list>
         </q-expansion-item>
+        <!-- ========== -->
+        <q-item
+          to="/admin/tableusers"
+          active-class="q-item-no-link-highlighting"
+        >
+          <q-item-section avatar>
+            <q-icon name="person" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Usuarios</q-item-label>
+          </q-item-section>
+        </q-item>
         <!-- ========== -->
         <q-item to="/Mail" active-class="q-item-no-link-highlighting">
           <q-item-section avatar>
@@ -240,15 +255,7 @@
             <q-item-label>Tables</q-item-label>
           </q-item-section>
         </q-item>
-        <!-- ========== -->
-        <q-item to="/Contact" active-class="q-item-no-link-highlighting">
-          <q-item-section avatar>
-            <q-icon name="person" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Contacto</q-item-label>
-          </q-item-section>
-        </q-item>
+
         <!-- ========== -->
         <q-item to="/Checkout" active-class="q-item-no-link-highlighting">
           <q-item-section avatar>

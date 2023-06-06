@@ -64,6 +64,10 @@ const routes = [
         path: "tablesproduct",
         component: () => import("pages/Admin/TablesProductCatPage.vue"),
       },
+      {
+        path: "tableusers",
+        component: () => import("pages/Admin/TableUsersPage.vue"),
+      },
     ],
   },
 

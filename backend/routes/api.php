@@ -11,6 +11,7 @@ use App\Http\Controllers\CatPanaderiaController;
 use App\Http\Controllers\CatPasteleController;
 use App\Http\Controllers\CatReposteriaController;
 use App\Http\Controllers\CarritoVentaController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,6 +26,14 @@ use App\Http\Controllers\CarritoVentaController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+//api usuarios
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/users', [UserController::class, 'index']);
+    Route::post('/users', [UserController::class, 'store']);
+    Route::get('/users/{id}', [UserController::class, 'show']);
+    Route::patch('/users/{id}', [UserController::class, 'update']);
+    Route::delete('/users/{id}', [UserController::class, 'destroy']);
 });
 //api featureds
 Route::get('/featureds', [FeaturedController::class, 'index']);

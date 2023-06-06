@@ -5,7 +5,9 @@
       :rows="panes"
       :columns="columnspanes"
       :filter="filter"
+      :rows-per-page-options="[7, 12, 15, 25]"
       row-key="id"
+      rows-per-page-label="Productos a Mostrar"
       no-data-label="No encontre nada para ti"
       no-results-label="El filtro no descubrió ningún resultado."
       flat

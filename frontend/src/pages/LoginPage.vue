@@ -25,7 +25,32 @@
       </q-card-section>
 
       <q-card-section v-if="isRegister">
-        <q-form @submit.prevent="submitRegister" class="q-gutter-md">
+        <q-form @submit.prevent="submitRegister" class="q-gutter-xs">
+          <q-file
+            filled
+            bottom-slots
+            v-model="registerForm.photo"
+            label="Foto de perfil"
+            counter
+            @update:model-value="updateFile()"
+          >
+            <template v-slot:before>
+              <q-avatar>
+                <img :src="imageUrl || 'src/assets/no_user_logo.png'" />
+              </q-avatar>
+            </template>
+            <template v-slot:prepend>
+              <q-icon name="cloud_upload" @click.stop.prevent />
+            </template>
+            <template v-slot:append>
+              <q-icon
+                name="close"
+                @click.stop.prevent="clearPreview"
+                class="cursor-pointer"
+              />
+            </template>
+          </q-file>
+
           <q-input
             type="text"
             label="Nombre"
@@ -50,6 +75,7 @@
             v-model="registerForm.password_confirmation"
             required
           />
+
           <q-card-actions vertical>
             <q-toggle
               v-model="accept"
@@ -92,6 +118,7 @@
           </q-card-actions>
         </q-form>
       </q-card-section>
+      <!-- Registro -->
       <q-card-section>
         <div v-if="isRegister" class="text-overline text-center">
           ¿Ya tienes una cuenta?
@@ -111,6 +138,12 @@ import { reactive, ref } from "vue";
 import api from "axios";
 import { useRouter } from "vue-router";
 import { useQuasar } from "quasar";
+import { useUserStore } from "src/stores/Auth";
+import { storeToRefs } from "pinia";
+
+const { submitLogin, submitRegister } = useUserStore();
+const { registerForm, loginForm } = storeToRefs(useUserStore());
+
 const $q = useQuasar();
 
 const accept = ref(false);
@@ -118,51 +151,82 @@ const accept = ref(false);
 const router = useRouter();
 const isRegister = ref(true);
 
-const loginForm = reactive({
-  email: "",
-  password: "",
-});
-
-const registerForm = reactive({
-  name: "",
-  email: "",
-  password: "",
-  password_confirmation: "",
-});
-
-async function submitLogin() {
-  try {
-    const lol = await api.post("http://localhost:8000/login", loginForm);
-    //  console.log('LOL', lol);
-    router.push({ path: "/" });
-  } catch (error) {
-    console.log("MI ERROR: ", error);
-  }
+const imageUrl = ref("");
+function updateFile() {
+  imageUrl.value = URL.createObjectURL(registerForm.value.photo);
+  console.log("imageUrl: ", imageUrl);
 }
 
-async function submitRegister() {
-  if (accept.value !== true) {
-    $q.notify({
-      color: "red-5",
-      textColor: "white",
-      icon: "warning",
-      message: "Primero debe aceptar la licencia y los términos",
-    });
-  } else {
-    try {
-      await api.post("http://localhost:8000/register", registerForm);
-      router.push({ path: "/" });
-      $q.notify({
-        color: "green-4",
-        textColor: "white",
-        icon: "cloud_done",
-        message: "Enviado",
-      });
-    } catch (error) {
-      console.log("MI ERROR: ", error);
-    }
-  }
+function clearPreview() {
+  registerForm.value.photo = null;
+  imageUrl.value = "";
 }
+
+// const loginForm = reactive({
+//   email: "",
+//   password: "",
+// });
+
+// const registerForm = reactive({
+//   name: "",
+//   email: "",
+//   password: "",
+//   password_confirmation: "",
+//   photo: null,
+// });
+
+// async function submitLogin() {
+//   try {
+//     await api.post("http://localhost:8000/login", loginForm);
+//     router.push({ path: "/" });
+//   } catch (error) {
+//     console.log("MI ERROR: ", error);
+//   }
+// }
+
+// async function submitRegister() {
+//   try {
+//     const formData = new FormData();
+//     formData.append("name", registerForm.name);
+//     formData.append("email", registerForm.email);
+//     formData.append("password", registerForm.password);
+//     formData.append("rol", "usuario" );
+//     formData.append(
+//       "password_confirmation",
+//       registerForm.password_confirmation
+//     );
+//     formData.append("photo", registerForm.photo);
+
+//     const response = await api.post(
+//       "http://localhost:8000/register",
+//       formData,
+//       {
+//         headers: {
+//           "Content-Type": "multipart/form-data",
+//         },
+//       }
+//     );
+
+//     if (response.status === 201) {
+//       $q.notify({
+//         color: "positive",
+//         message: "Usuario registrado exitosamente",
+//         position: "top",
+//         icon: "check",
+//       });
+//       router.push({ path: "/" });
+//     }
+//   } catch (error) {
+//     console.log("MI ERROR: ", error);
+//     $q.notify({
+//       color: "negative",
+//       message: "Error al registrar usuario",
+//       position: "top",
+//       icon: "report_problem",
+//     });
+//   }
+// }
+
 function toggleForm(value) {
   isRegister.value = value;
 }

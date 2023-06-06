@@ -65,7 +65,7 @@
 
               <div class="column items-center">
                 <q-avatar size="72px">
-                  <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
+                  <img :src="user?.photo" />
                 </q-avatar>
 
                 <div class="text-subtitle1 q-mt-md q-mb-xs">
@@ -107,7 +107,6 @@
 
     <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered>
       <q-list>
-        <!-- <q-item-label header>dfg </q-item-label> -->
         <LeftDrawerMenu />
       </q-list>
     </q-drawer>
@@ -175,28 +174,27 @@ import { useUserStore } from "src/stores/Auth";
 import { storeToRefs } from "pinia";
 import { api } from "src/boot/axios";
 import { useProductStore } from "src/stores/ProductStore";
-import { useQuasar } from "quasar";
 
-// const userStore = useUserStore();
-const $q = useQuasar();
 const { getUser, getAllCookies } = useUserStore();
 const { carritoCantidad } = storeToRefs(useProductStore());
 const { user, cookies } = storeToRefs(useUserStore());
+
 onMounted(async () => {
   // getAllCookies() ;
   // if(cookies !== null){
-    await getUser();
+  await getUser();
   // }
 });
 
 const logout = async () => {
   try {
     await api.post("/logout");
-    userStore.user = null;
+    user.value = null;
   } catch (error) {
     console.error(error);
   }
 };
+
 const leftDrawerOpen = ref(false);
 const rightDrawerOpen = ref(false);
 

@@ -4,11 +4,12 @@
     class="row q-gutter-lg q-pa-lg text-accent"
     v-if="userStore.user"
   >
-    AuthUser =>
-    {{ userStore.user?.name }}
-    <q-separator inset />
-    AuthStore =>
-    {{ userStore.user }}
+    <q-img
+      src="\public\profile_photos\647e57d32fec1.jpg"
+      :ratio="16/9"
+      spinner-color="primary"
+      spinner-size="82px"
+    />
     <q-separator inset />
   </q-page>
 </template>

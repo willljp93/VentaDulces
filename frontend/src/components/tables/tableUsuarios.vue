@@ -101,22 +101,31 @@
       <q-card class="dialog addedit">
         <q-card-section>
           <q-form class="row justify-center q-gutter-lg">
-            <q-input
+            <q-file
               class="col-10"
+              filled
               bottom-slots
               v-model="tempUsers.photo"
-              label="Imagen"
+              label="Foto de perfil"
+              counter
+              @update:model-value="updateFile()"
             >
               <template v-slot:before>
                 <q-avatar size="100px">
-                  <q-img
-                    :ratio="1"
-                    v-if="tempUsers.photo"
-                    :src="tempUsers.photo"
-                  />
+                  <img :src="imageUrl || tempUsers.photo" />
                 </q-avatar>
               </template>
-            </q-input>
+              <template v-slot:prepend>
+                <q-icon name="cloud_upload" @click.stop.prevent />
+              </template>
+              <template v-slot:append>
+                <q-icon
+                  name="close"
+                  @click.stop.prevent="clearPreview"
+                  class="cursor-pointer"
+                />
+              </template>
+            </q-file>
             <q-input
               class="col-4"
               v-model="tempUsers.name"
@@ -145,6 +154,17 @@
               v-if="AddU == true"
               required
             />
+            <q-select
+              class="col-6"
+              label="Rol de Usuario"
+              transition-show="scale"
+              transition-hide="scale"
+              rounded
+              standout
+              v-model="tempUsers.rol"
+              :options="options"
+              style="width: 200px"
+            />
             <div class="q-mt-md justify-center q-gutter-lg">
               <q-btn
                 type="submit"
@@ -172,7 +192,7 @@
         <q-card>
           <q-card-section align="center">
             <q-img
-              style="height: 200px; max-width: 200px"
+              style="height: 150px; max-width: 150px"
               :ratio="1"
               :src="tempUsers.photo"
               :alt="tempUsers.name"
@@ -186,6 +206,8 @@
               <q-item-label>{{ tempUsers.name }}</q-item-label>
               <q-item-label overline>Correo Electronico:</q-item-label>
               <q-item-label>{{ tempUsers.email }}</q-item-label>
+              <q-item-label overline>Rol:</q-item-label>
+              <q-item-label>{{ tempUsers.rol }}</q-item-label>
             </q-item-section>
             <q-card-section>
               <q-item-section class="col text-h6 ellipsis">
@@ -247,6 +269,15 @@ const columnsUsers = [
     sortable: true,
     autoWidth: true,
   },
+  {
+    name: "rol",
+    align: "center",
+    label: "Rol de Usuario",
+    field: "rol",
+    required: true,
+    sortable: true,
+    autoWidth: true,
+  },
   { name: "actions", label: "Acciones", align: "center", autoWidth: true },
 ];
 
@@ -266,10 +297,24 @@ const openEditDialog = (row) => {
 };
 const openAddDialog = () => {
   tempUsers.value = {};
+  imageUrl.value = "";
   AddU.value = true;
   EditU.value = false;
   showDialogU.value = true;
 };
+
+const imageUrl = ref("");
+function updateFile() {
+  imageUrl.value = URL.createObjectURL(tempUsers.value.photo);
+  console.log("imageUrl: ", imageUrl.value);
+}
+
+function clearPreview() {
+  tempUsers.value.photo = null;
+  imageUrl.value = "";
+}
+
+const options = ["administrador", "usuario"];
 </script>
 
 <style lang="scss">

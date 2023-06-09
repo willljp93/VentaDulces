@@ -2,40 +2,44 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 
 class UserController extends Controller
 {
+    protected $user;
+
+    public function __construct(User $user)
+    {
+        $this->user = $user;
+    }
+
     public function index()
     {
-        $users = User::all();
+        $users = $this->user->all();
         return response()->json(['users' => $users]);
     }
 
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'photo' => ['image', 'max:2048'], // Cambiar el tamaño máximo según sea necesario
-        ]);
-
-        $user = new User;
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->password = Hash::make($request->password);
-
+        $photo_path = null;
         if ($request->hasFile('photo')) {
             $photo = $request->file('photo');
             $fileName = uniqid() . '.' . $photo->getClientOriginalExtension();
             $photo->storeAs('public/profile_photos', $fileName);
-            $user->photo_path = 'http://localhost:8000/storage/profile_photos/' . $fileName;
+            $photo_path = Storage::url('profile_photos/' . $fileName);
         }
 
-        $user->save();
+        $user = $this->user->create([
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'password' => Hash::make($request->input('password')),
+            'photo' => $photo_path,
+            'rol' => $request->input('rol')
+        ]);
 
         return response()->json([
             'message' => 'User created successfully',
@@ -43,44 +47,54 @@ class UserController extends Controller
         ], 201);
     }
 
-
-    public function show(string $id)
+    public function show(User $user)
     {
-        $user = User::find($id);
-        if (!$user) {
-            return response()->json(['error' => 'User not found'], 404);
-        }
         return response()->json(['user' => $user]);
     }
 
-    public function update(Request $request, string $id)
+    public function update(UpdateUserRequest $request, User $user)
     {
-        $user = User::find($id);
+
+        $user = User::find($user->id);
         if (!$user) {
-            return response()->json(['error' => 'User not found'], 404);
+            return response()->json(['message' => 'User not found'], 404);
         }
-        $validatedData = $request->validate([
-            'name' => 'sometimes|required|max:255',
-            'email' => 'sometimes|required|email|unique:users,email,' . $id,
-            'password' => 'sometimes|required|min:8',
-            'photo' => 'nullable|image|max:2048',
-            'rol' => 'sometimes|required|string',
-        ]);
-        if ($request->file('photo')) {
-            $validatedData['photo'] = $request->file('photo')->store('public');
+
+        $user->name = $request->input('name');
+        $user->email = $request->input('email');
+        if ($request->input('password')) {
+            $user->password = Hash::make($request->input('password'));
         }
-        $user->fill($validatedData);
+        if ($request->hasFile('photo')) {
+            if ($user->photo && Storage::exists('public/profile_photos/' . basename($user->photo))) {
+                Storage::delete('public/profile_photos/' . basename($user->photo));
+            }
+            $photo = $request->file('photo');
+            $fileName = uniqid() . '.' . $photo->getClientOriginalExtension();
+            $photo->storeAs('public/profile_photos', $fileName);
+            $user->photo = Storage::url('profile_photos/' . $fileName);
+        } else {
+            $user->photo = null;
+        }
+        $user->rol = $request->input('rol');
         $user->save();
-        return response()->json(['user' => $user]);
+
+        return response()->json([
+            'message' => 'User updated successfully',
+            'user' => $user,
+        ], 200);
     }
 
-    public function destroy(string $id)
+    public function destroy(User $id)
     {
-        $user = User::find($id);
-        if (!$user) {
-            return response()->json(['error' => 'User not found'], 404);
+        // if (!$user) {
+        //     return response()->json(['error' => 'User not found'], 404);
+        // }
+        if ($id->photo && Storage::exists('public/profile_photos/' . basename($id->photo))) {
+            Storage::delete('public/profile_photos/' . basename($id->photo));
         }
-        $user->delete();
+
+        $id->delete();
         return response()->json(['message' => 'User deleted']);
     }
 }

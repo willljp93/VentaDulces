@@ -2,7 +2,6 @@ import { defineStore } from "pinia";
 import axios from "axios";
 import { api } from "src/boot/axios";
 import { Notify, Dialog, Cookies } from "quasar";
-import route from "vue-router";
 
 export const useUserStore = defineStore("user", {
   state: () => ({
@@ -49,9 +48,9 @@ export const useUserStore = defineStore("user", {
     async submitLogin() {
       try {
         await api.post("http://localhost:8000/login", this.loginForm);
-        this.route.push({ path: "/" });
+        this.router.push("/");
       } catch (error) {
-        console.log("MI ERROR: ", error);
+        console.log("MI ERROR login: ", error);
       }
     },
 
@@ -85,10 +84,10 @@ export const useUserStore = defineStore("user", {
             position: "top",
             icon: "check",
           });
-          this.router.push({ path: "/" });
+          this.router.push("/");
         }
       } catch (error) {
-        console.log("MI ERROR: ", error);
+        console.log("MI ERROR Registro: ", error);
         Notify.create({
           color: "negative",
           message: "Error al registrar usuario",
@@ -110,7 +109,7 @@ export const useUserStore = defineStore("user", {
     },
     async addUsers(data) {
       try {
-        await api.post("http://localhost:8000/register", data);
+        await api.post("http://localhost:8000/api/users", data);
         Notify.create({
           message: "Agregado con exito",
           icon: "check",
@@ -130,7 +129,12 @@ export const useUserStore = defineStore("user", {
       try {
         await api.patch(
           `http://localhost:8000/api/users/${id}`,
-          this.tempUsers
+          this.tempUsers,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
         );
         Notify.create({
           message: "Editado con éxito",

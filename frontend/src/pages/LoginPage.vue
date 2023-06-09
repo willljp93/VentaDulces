@@ -134,21 +134,14 @@
 </template>
 
 <script setup>
-import { reactive, ref } from "vue";
-import api from "axios";
-import { useRouter } from "vue-router";
-import { useQuasar } from "quasar";
+import { ref } from "vue";
 import { useUserStore } from "src/stores/Auth";
 import { storeToRefs } from "pinia";
 
 const { submitLogin, submitRegister } = useUserStore();
 const { registerForm, loginForm } = storeToRefs(useUserStore());
 
-const $q = useQuasar();
-
 const accept = ref(false);
-
-const router = useRouter();
 const isRegister = ref(true);
 
 const imageUrl = ref("");
@@ -161,71 +154,6 @@ function clearPreview() {
   registerForm.value.photo = null;
   imageUrl.value = "";
 }
-
-// const loginForm = reactive({
-//   email: "",
-//   password: "",
-// });
-
-// const registerForm = reactive({
-//   name: "",
-//   email: "",
-//   password: "",
-//   password_confirmation: "",
-//   photo: null,
-// });
-
-// async function submitLogin() {
-//   try {
-//     await api.post("http://localhost:8000/login", loginForm);
-//     router.push({ path: "/" });
-//   } catch (error) {
-//     console.log("MI ERROR: ", error);
-//   }
-// }
-
-// async function submitRegister() {
-//   try {
-//     const formData = new FormData();
-//     formData.append("name", registerForm.name);
-//     formData.append("email", registerForm.email);
-//     formData.append("password", registerForm.password);
-//     formData.append("rol", "usuario" );
-//     formData.append(
-//       "password_confirmation",
-//       registerForm.password_confirmation
-//     );
-//     formData.append("photo", registerForm.photo);
-
-//     const response = await api.post(
-//       "http://localhost:8000/register",
-//       formData,
-//       {
-//         headers: {
-//           "Content-Type": "multipart/form-data",
-//         },
-//       }
-//     );
-
-//     if (response.status === 201) {
-//       $q.notify({
-//         color: "positive",
-//         message: "Usuario registrado exitosamente",
-//         position: "top",
-//         icon: "check",
-//       });
-//       router.push({ path: "/" });
-//     }
-//   } catch (error) {
-//     console.log("MI ERROR: ", error);
-//     $q.notify({
-//       color: "negative",
-//       message: "Error al registrar usuario",
-//       position: "top",
-//       icon: "report_problem",
-//     });
-//   }
-// }
 
 function toggleForm(value) {
   isRegister.value = value;

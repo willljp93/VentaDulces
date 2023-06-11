@@ -42,6 +42,7 @@ export const useUserStore = defineStore("user", {
       try {
         const { data } = await axios.get("http://localhost:8000/api/user");
         this.user = data;
+        console.log('USER', this.user);
       } catch (error) {}
     },
 
@@ -57,7 +58,7 @@ export const useUserStore = defineStore("user", {
     async submitRegister() {
       try {
         const formData = new FormData();
-        formData.append("name", this.registerForm.email);
+        formData.append("name", this.registerForm.name);
         formData.append("email", this.registerForm.email);
         formData.append("password", this.registerForm.password);
         formData.append("rol", "usuario");

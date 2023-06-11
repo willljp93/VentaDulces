@@ -13,6 +13,7 @@
 
         <div class="row col justify-end items-center content-end">
           <q-btn
+            v-if="user?.rol === 'administrador'"
             dense
             stretch
             unelevated
@@ -177,7 +178,7 @@ import { useProductStore } from "src/stores/ProductStore";
 
 const { getUser, getAllCookies } = useUserStore();
 const { carritoCantidad } = storeToRefs(useProductStore());
-const { user, cookies } = storeToRefs(useUserStore());
+const { user } = storeToRefs(useUserStore());
 
 onMounted(async () => {
   // getAllCookies() ;

@@ -52,10 +52,10 @@ class UserController extends Controller
         return response()->json(['user' => $user]);
     }
 
-    public function update(UpdateUserRequest $request, User $user)
+    public function update(UpdateUserRequest $request, User $id)
     {
 
-        $user = User::find($user->id);
+        $user = User::find($id->id);
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
         }

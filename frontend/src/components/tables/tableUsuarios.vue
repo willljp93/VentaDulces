@@ -101,7 +101,26 @@
       <q-card class="dialog addedit">
         <q-card-section>
           <q-form class="row justify-center q-gutter-lg">
+            <q-avatar size="100px" v-if="!showFoto">
+              <img :src="imageUrl || tempUsers.photo" />
+            </q-avatar>
+            <div class="col-8">
+              <q-btn
+                v-if="!showFoto && !AddU"
+                color="secondary"
+                icon="check"
+                label="Cambiar Imagen"
+                @click="toogleShowFoto"
+              />
+              <!-- <q-toggle
+                v-if="!showFoto && !AddU"
+                v-model="showFoto"
+                color="secondary"
+                label="Cambiar Imagen"
+              /> -->
+            </div>
             <q-file
+              v-if="showFoto"
               class="col-10"
               filled
               bottom-slots
@@ -290,6 +309,7 @@ const openViewDialog = (row) => {
   ViewU.value = true;
 };
 const openEditDialog = (row) => {
+  showFoto.value = false;
   tempUsers.value = { ...row };
   AddU.value = false;
   EditU.value = true;
@@ -315,6 +335,11 @@ function clearPreview() {
 }
 
 const options = ["administrador", "usuario"];
+
+const showFoto = ref(false);
+const toogleShowFoto = () => {
+  showFoto.value = !showFoto.value;
+};
 </script>
 
 <style lang="scss">

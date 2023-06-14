@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
@@ -52,32 +53,41 @@ class UserController extends Controller
         return response()->json(['user' => $user]);
     }
 
-    public function update(UpdateUserRequest $request, User $id)
+    public function update(Request $request)
     {
+        $validated = $request->validate([
+            "photo" => 'image'
+        ]);
+        $user = User::findorfail($request->id);
 
-        $user = User::find($id->id);
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
         }
 
         $user->name = $request->input('name');
-        $user->email = $request->input('email');
-        if ($request->input('password')) {
-            $user->password = Hash::make($request->input('password'));
-        }
-        if ($request->hasFile('photo')) {
-            if ($user->photo && Storage::exists('public/profile_photos/' . basename($user->photo))) {
-                Storage::delete('public/profile_photos/' . basename($user->photo));
-            }
-            $photo = $request->file('photo');
-            $fileName = uniqid() . '.' . $photo->getClientOriginalExtension();
-            $photo->storeAs('public/profile_photos', $fileName);
-            $user->photo = Storage::url('profile_photos/' . $fileName);
+        $user->email = $request->email;
+        /*if ($request->input('password')) {
+            $user->password = Hash::make($request->password);
+        }*/
+        $user->rol = $request->rol;
+        if ($user->photo == $request->photo) {
+            $user->save();
         } else {
-            $user->photo = null;
+            if ($request->hasFile('photo')) {
+                if ($user->photo && Storage::exists('public/profile_photos/' . basename($user->photo))) {
+                    Storage::delete('public/profile_photos/' . basename($user->photo));
+                }
+                $photo = $request->file('photo');
+
+
+                $fileName = uniqid() . '.' . $photo->getClientOriginalExtension();
+                $photo->storeAs('public/profile_photos', $fileName);
+                $user->photo = Storage::url('http://localhost:8000/storage/profile_photos' . $fileName);
+            }
+            $user->save();
         }
-        $user->rol = $request->input('rol');
-        $user->save();
+
+
 
         return response()->json([
             'message' => 'User updated successfully',

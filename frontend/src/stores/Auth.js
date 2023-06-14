@@ -42,7 +42,7 @@ export const useUserStore = defineStore("user", {
       try {
         const { data } = await axios.get("http://localhost:8000/api/user");
         this.user = data;
-        console.log('USER', this.user);
+        console.log("USER", this.user);
       } catch (error) {}
     },
 
@@ -128,31 +128,71 @@ export const useUserStore = defineStore("user", {
     },
     async editUsers(id) {
       try {
-        await api.patch(
-          `http://localhost:8000/api/users/${id}`,
-          this.tempUsers,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-        Notify.create({
-          message: "Editado con éxito",
-          icon: "check",
-          color: "positive",
+        const formData = new FormData();
+        formData.append("name", this.tempUsers.name);
+        formData.append("email", this.tempUsers.email);
+        formData.append("rol", this.tempUsers.rol);
+        // formData.append("password", this.tempUsers.password);
+        // formData.append(
+        //   "password_confirmation",
+        //   this.tempUsers.password_confirmation
+        // );
+        formData.append("photo", this.tempUsers.photo);
+
+        const response = await api.patch(`/api/users/${id}`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         });
-        await this.getAllUsers();
-        this.showDialogU = false;
-        this.tempUsers = [];
+
+        if (response.status === 201) {
+          Notify.create({
+            color: "positive",
+            message: "Usuario updated exitosamente",
+            position: "top",
+            icon: "check",
+          });
+          await this.getAllUsers();
+          this.showDialogU = false;
+          this.tempUsers = [];
+        }
       } catch (error) {
+        console.log("MI ERROR Registro: ", error);
         Notify.create({
-          message: "Error al editar",
-          icon: "times",
           color: "negative",
+          message: "Error al actualizar usuario",
+          position: "top",
+          icon: "report_problem",
         });
       }
     },
+    // async editUsers(id) {
+    //   try {
+    //     await api.put(
+    //       `http://localhost:8000/api/users/${id}`,
+    //       this.tempUsers,
+    //       {
+    //         headers: {
+    //           "Content-Type": "multipart/form-data",
+    //         },
+    //       }
+    //     );
+    //     Notify.create({
+    //       message: "Editado con éxito",
+    //       icon: "check",
+    //       color: "positive",
+    //     });
+    //     await this.getAllUsers();
+    //     this.showDialogU = false;
+    //     this.tempUsers = [];
+    //   } catch (error) {
+    //     Notify.create({
+    //       message: "Error al editar",
+    //       icon: "times",
+    //       color: "negative",
+    //     });
+    //   }
+    // },
     async deleteUsers(id) {
       try {
         Dialog.create({
